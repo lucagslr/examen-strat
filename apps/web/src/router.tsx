@@ -35,10 +35,28 @@ export function FournisseurRoutage({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const surChangement = () => setEtat(lireHash())
+
+    // `hashchange` couvre la navigation normale. On écoute aussi `popstate`,
+    // qui est le seul signal quand l'URL est pilotée depuis l'extérieur de la
+    // page — outil d'automatisation, embarquement dans une autre application.
     window.addEventListener('hashchange', surChangement)
+    window.addEventListener('popstate', surChangement)
+
     // Un premier hash vide est normalisé, pour que l'URL soit toujours partageable.
     if (!window.location.hash) window.location.replace(`${window.location.pathname}${window.location.search}#/`)
-    return () => window.removeEventListener('hashchange', surChangement)
+
+    // L'URL a pu changer entre le premier rendu et l'attachement des écouteurs.
+    setEtat((precedent) => {
+      const courant = lireHash()
+      return courant.chemin === precedent.chemin && courant.requete.toString() === precedent.requete.toString()
+        ? precedent
+        : courant
+    })
+
+    return () => {
+      window.removeEventListener('hashchange', surChangement)
+      window.removeEventListener('popstate', surChangement)
+    }
   }, [])
 
   const naviguer = useCallback((chemin: string, options?: { remplacer?: boolean }) => {
