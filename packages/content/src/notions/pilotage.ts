@@ -1,0 +1,268 @@
+import type { Notion } from '../types'
+
+/** PARTIE VI — PILOTAGE, COLLECTE DE DONNÉES ET MÉTHODE TRANSVERSALE */
+export const notionsPilotage: Notion[] = [
+  {
+    id: 'collecte-donnees-utilisateurs',
+    slug: 'collecte-donnees-utilisateurs',
+    nom: 'Collecte de données utilisateurs',
+    nomCourt: 'Collecte utilisateurs',
+    acronyme: 'O-I-S-F',
+    aliases: ['design thinking', 'étude utilisateur', 'recherche utilisateur', 'observation interview sondage focus group'],
+    categorie: 'pilotage',
+    type: 'methode',
+    priorite: 2,
+    definitionCours:
+      "Ensemble des méthodes pour comprendre les besoins, comportements et attentes d'un utilisateur, d'un public cible ou des parties prenantes, avant ou pendant la conception d'une offre. Quatre méthodes : Observation, Interview, Sondage, Focus group.",
+    explicationSimple:
+      "Le chaînon entre le diagnostic et la décision. Observation → comprendre un usage réel. Interview → comprendre des motivations. Sondage → mesurer et généraliser. Focus group → générer des idées.",
+    pourquoiExiste:
+      "Une question de cas peut demander : « comment l'entreprise aurait-elle pu éviter d'exclure ses clients seniors ? » La bonne réponse mobilise l'observation et l'interview des utilisateurs réels avant de déployer un service « Digital First ».",
+    commentUtiliser: [
+      { titre: "Définir l'objectif", detail: 'Qui veut-on comprendre, et pour décider quoi ?' },
+      { titre: 'Choisir la méthode', detail: 'Usage → observation ; motivations → interview ; mesure → sondage ; idées → focus group.' },
+      { titre: 'Croiser les méthodes (triangulation)', detail: 'Observer puis interviewer puis quantifier par sondage.' },
+      { titre: 'Traduire en décision', detail: 'Besoin identifié → proposition de valeur, fonctionnalité, ou correction.' },
+    ],
+    exemples: [
+      {
+        texte:
+          "SilverDigital aurait pu, AVANT son virage « Digital First » : observer des clients seniors utilisant l'app (→ blocages au 2FA), les interviewer (→ peur de l'erreur, besoin de contact humain), puis sonder l'ensemble de la base (→ quantifier le % de clients > 65 ans en difficulté). Résultat probable : un parcours hybride au lieu d'une exclusion indirecte de 12 % des seniors.",
+        cas: 'silverdigital',
+        source: 'fiche-collecte',
+      },
+    ],
+    phraseExamen: "Les gens ne font pas ce qu'ils disent : il faut observer l'usage réel.",
+    limites: [
+      "⚠️ Ce thème n'apparaît dans aucun slide PDF fourni. Il est reconstruit à partir des consignes détaillées (méthodologie de type design thinking, standard à la HEG). Fiable méthodologiquement mais non sourçable sur un deck précis du cours.",
+    ],
+    motsCles: ['observation', 'interview', 'sondage', 'focus group', 'triangulation'],
+    sources: ['fiche-collecte', 'glossaire'],
+    provenance: 'interpretation',
+  },
+  {
+    id: 'observation',
+    slug: 'observation',
+    nom: 'Observation (sans interaction)',
+    nomCourt: 'Observation',
+    categorie: 'pilotage',
+    type: 'methode',
+    priorite: 2,
+    definitionCours:
+      "Observer sans intervenir pour ne pas modifier le comportement. On note les comportements réels et les raccourcis que les gens prennent (workarounds), le langage corporel, les émotions (frustration, hésitation), et les écarts entre le parcours prévu et le parcours réel.",
+    explicationSimple: "Capte ce que les gens FONT (≠ ce qu'ils DISENT). Force : l'usage réel. Limite : pas de « pourquoi ».",
+    motsCles: ['qualitatif', 'usage réel', 'workaround', 'émotions'],
+    sources: ['fiche-collecte', 'glossaire'],
+    provenance: 'interpretation',
+  },
+  {
+    id: 'interview',
+    slug: 'interview',
+    nom: 'Interview (entretien individuel)',
+    nomCourt: 'Interview',
+    aliases: ['entretien', '5 pourquoi'],
+    categorie: 'pilotage',
+    type: 'methode',
+    priorite: 2,
+    definitionCours:
+      "Méthode qualitative reposant sur des questions ouvertes (« racontez-moi… »), impartiales et neutres, portant sur le passé et le présent et non sur le futur, sans demander de solution à l'utilisateur, avec la technique des « 5 pourquoi » pour remonter à la cause racine, et en explorant les émotions.",
+    explicationSimple: "Bonne interview = O-N-P-5 : Ouverte, Neutre, Passé, 5 pourquoi.",
+    pieges: [
+      { erreur: 'Poser des questions au futur (« utiliseriez-vous ? »).', pourquoi: 'Les réponses au futur sont peu fiables.' },
+      { erreur: "Demander à l'utilisateur la solution.", pourquoi: "C'est le rôle du concepteur ; l'utilisateur exprime un problème." },
+      { erreur: 'Poser des questions orientées (« ne trouvez-vous pas que… ? »).', pourquoi: 'On induit la réponse.' },
+    ],
+    motsCles: ['ouvertes', 'neutres', 'passé', '5 pourquoi', 'motivations'],
+    sources: ['fiche-collecte', 'glossaire'],
+    provenance: 'interpretation',
+  },
+  {
+    id: 'sondage',
+    slug: 'sondage',
+    nom: 'Sondage (questionnaire)',
+    nomCourt: 'Sondage',
+    categorie: 'pilotage',
+    type: 'methode',
+    priorite: 2,
+    definitionCours:
+      "Méthode quantitative : questions fermées (oui/non, échelle, choix), formulation neutre sans orientation, équilibre des choix de réponse, test du questionnaire sur quelques personnes avant diffusion, analyse prévue dès la conception.",
+    explicationSimple: "Sert à mesurer et généraliser. Force : l'échelle. Limite : pas de nuance, biais de formulation.",
+    motsCles: ['quantitatif', 'fermées', 'échelle', 'test préalable'],
+    sources: ['fiche-collecte', 'glossaire'],
+    provenance: 'interpretation',
+  },
+  {
+    id: 'focus-group',
+    slug: 'focus-group',
+    nom: 'Focus group (groupe de discussion)',
+    nomCourt: 'Focus group',
+    categorie: 'pilotage',
+    type: 'methode',
+    priorite: 3,
+    definitionCours:
+      "6 à 12 participants, durée ~45 minutes, un animateur neutre qui ne donne pas son avis, des rôles définis (animateur, observateur/preneur de notes), un guide d'entretien préparé. Objectif : faire émerger et confronter des idées.",
+    explicationSimple: "Force : la dynamique de groupe. Limite : conformisme, leader d'opinion.",
+    chiffres: [{ libelle: 'Format', valeur: '6-12 participants / ~45 min / animateur neutre' }],
+    motsCles: ['groupe', 'animateur', 'guide d’entretien'],
+    sources: ['fiche-collecte', 'glossaire'],
+    provenance: 'interpretation',
+  },
+  {
+    id: 'besoin-latent',
+    slug: 'besoin-latent',
+    nom: 'Besoin latent',
+    categorie: 'pilotage',
+    type: 'notion',
+    priorite: 3,
+    definitionCours:
+      "Besoin réel mais non formulé que l'utilisateur ne sait pas exprimer. Se découvre par l'observation et la technique des « 5 pourquoi » plutôt qu'en demandant directement.",
+    explicationSimple: "Ce que l'utilisateur ne sait pas qu'il veut — et qui fait la différence en innovation.",
+    motsCles: ['non formulé', 'observation', 'innovation'],
+    sources: ['fiche-collecte', 'glossaire'],
+    provenance: 'interpretation',
+  },
+  {
+    id: 'kpi',
+    slug: 'kpi',
+    nom: 'KPI — indicateurs de pilotage',
+    nomCourt: 'KPI',
+    acronyme: 'KPI',
+    aliases: ['indicateurs', 'key performance indicator', 'reporting', 'SMART'],
+    categorie: 'pilotage',
+    type: 'outil',
+    priorite: 2,
+    definitionCours:
+      "Le pilotage se fait par le biais d'un système de contrôle. Exemples : reportings réguliers (mensuels, trimestriels, annuels) utilisant une diversité de mesures financières et quantitatives. Les 169 cibles des ODD et le système MONET 2030 fournissent des indicateurs déjà formulés.",
+    explicationSimple:
+      "Distingue toujours KPI de MOYEN (a-t-on fait le travail ?) et KPI de RÉSULTAT (cela produit-il l'effet visé ?). Une bonne réponse propose au moins un de chaque.",
+    phraseExamen:
+      "Donner un KPI vague (« mieux servir ») ne vaut rien : il faut un indicateur mesurable, avec une cible et une échéance.",
+    motsCles: ['moyen', 'résultat', 'mesurable', 'cible'],
+    sources: ['encyclopedie', 'cas-silverdigital'],
+    provenance: 'cours',
+  },
+  {
+    id: 'tensions-strategiques',
+    slug: 'tensions-strategiques',
+    nom: 'Tensions et arbitrages stratégiques',
+    nomCourt: 'Tensions / arbitrages',
+    aliases: ['arbitrage', 'dilemme', 'trade-off', 'court terme long terme'],
+    categorie: 'pilotage',
+    type: 'notion',
+    priorite: 1,
+    definitionCours:
+      "Une bonne conclusion prend position et nomme la tension : court terme vs long terme, rentabilité vs inclusion, efficacité vs effet rebond. Formules : « En définitive, X n'est un levier que sous condition de Y. » ; « Le véritable arbitrage se situe entre … et …. »",
+    explicationSimple:
+      "Les tensions récurrentes du cours : court terme / long terme · rentabilité / inclusion · efficacité / sobriété · innovation / impact · coût / qualité · croissance / limites planétaires · performance financière / objectifs durables · digitalisation / lien humain.",
+    commentUtiliser: [
+      { titre: 'Option A (gains)', detail: 'Ce que l’on gagne, chiffré si possible.' },
+      { titre: 'Option B (gains)', detail: 'Ce que l’autre voie apporte.' },
+      { titre: 'Critère de décision', detail: 'SAF, parties prenantes, court/long terme.' },
+      { titre: 'Position', detail: 'Trancher — et assumer le coût de sa position.' },
+    ],
+    exemples: [
+      {
+        texte:
+          "SilverDigital : tout-numérique (marge) vs hybride (inclusion) → critère = risque stratégique long terme → recommander l'hybride.",
+        cas: 'silverdigital',
+        source: 'methodologie',
+      },
+    ],
+    phraseExamen: "Le véritable arbitrage se situe entre le court terme et le long terme.",
+    motsCles: ['trancher', 'position', 'tension', 'conclusion'],
+    sources: ['methodologie', 'synthese', 'encyclopedie'],
+    provenance: 'cours',
+  },
+  {
+    id: 'pensee-systemique',
+    slug: 'pensee-systemique',
+    nom: 'Pensée systémique',
+    aliases: ['tout est lié', 'systémique', 'pensée critique'],
+    categorie: 'pilotage',
+    type: 'notion',
+    priorite: 2,
+    definitionCours:
+      "Objectifs du cours : pensée systémique, pensée analytique, pensée critique, pensée créative, durabilité dans la stratégie d'entreprise, accessibilité numérique. « Tout est lié et le dépassement d'une limite planétaire a généralement un impact sur les autres limites. »",
+    explicationSimple:
+      "Les objectifs annoncés du cours sont d'abord des modes de pensée, pas des connaissances. L'examen évalue donc un raisonnement, pas une récitation.",
+    phraseExamen:
+      "« Tout est lié » est la définition même de la pensée systémique, qui est l'un des quatre objectifs annoncés du cours.",
+    motsCles: ['interdépendance', 'boucles', 'raisonnement'],
+    sources: ['encyclopedie', 'carte-globale'],
+    provenance: 'cours',
+  },
+  {
+    id: 'idg',
+    slug: 'idg',
+    nom: 'IDG — Inner Development Goals',
+    nomCourt: 'IDG',
+    acronyme: 'IDG',
+    aliases: ['compétences clés 2030', 'inner development goals'],
+    categorie: 'pilotage',
+    type: 'modele',
+    priorite: 3,
+    definitionCours:
+      "Cadre de compétences internes pour soutenir les ODD, en 5 dimensions : Être, Penser, Relier, Collaborer, Agir. Complément « humain » des compétences clés attendues à l'horizon 2030 (dont résilience, flexibilité et agilité).",
+    explicationSimple:
+      "Les ODD décrivent ce qu'il faut atteindre ; les IDG décrivent les capacités humaines nécessaires pour y parvenir.",
+    motsCles: ['Être', 'Penser', 'Relier', 'Collaborer', 'Agir'],
+    sources: ['carte-globale', 'glossaire'],
+    provenance: 'cours',
+  },
+  {
+    id: 'lisaec',
+    slug: 'lisaec',
+    nom: 'Méthode L-I-S-A-E-C',
+    nomCourt: 'L-I-S-A-E-C',
+    acronyme: 'L-I-S-A-E-C',
+    aliases: ['méthode examen', 'Lire Identifier Structurer Argumenter Étendre Conclure'],
+    categorie: 'pilotage',
+    type: 'methode',
+    priorite: 1,
+    definitionCours:
+      "L — Lire : décoder la consigne et le verbe (« qu'attend-on de moi ? »). I — Identifier : repérer les notions du cours visées (« quels outils mobiliser ? »). S — Structurer : plan rapide, intro / 2-3 axes / conclusion (« dans quel ordre ? »). A — Argumenter : définir → expliquer → illustrer (« quel exemple ? »). E — Étendre : faire les liens transversaux (« quels autres chapitres ? »). C — Conclure : trancher et arbitrer (« quelle position ? »).",
+    explicationSimple:
+      "La procédure standard pour toute question. À la HEG, la note se joue moins sur le savoir que sur la capacité à mobiliser, structurer et arbitrer.",
+    phraseExamen:
+      "Deux copies citant les mêmes notions n'ont pas la même note : celle qui relie, illustre et tranche gagne.",
+    motsCles: ['Lire', 'Identifier', 'Structurer', 'Argumenter', 'Étendre', 'Conclure'],
+    sources: ['methodologie', 'memos'],
+    provenance: 'cours',
+  },
+  {
+    id: 'dei',
+    slug: 'dei',
+    nom: 'Brique d’argument D-E-I',
+    nomCourt: 'D-E-I',
+    acronyme: 'D-E-I',
+    aliases: ['Définir Expliquer Illustrer', 'Description Explication Illustration'],
+    categorie: 'pilotage',
+    type: 'methode',
+    priorite: 1,
+    definitionCours:
+      "Chaque paragraphe suit D-E-I : Définir la notion → Expliquer le mécanisme → Illustrer par un exemple. Sans exemple, l'argument reste abstrait → note plafonnée.",
+    explicationSimple: "La plus petite unité d'une bonne réponse : une définition, un mécanisme, un exemple.",
+    phraseExamen: "Un argument = une idée + une notion + un exemple.",
+    motsCles: ['définir', 'expliquer', 'illustrer', 'paragraphe'],
+    sources: ['methodologie', 'memos'],
+    provenance: 'cours',
+  },
+  {
+    id: 'verbes-consigne',
+    slug: 'verbes-consigne',
+    nom: 'Les verbes de consigne',
+    nomCourt: 'Verbes de consigne',
+    aliases: ['définissez', 'expliquez', 'analysez', 'discutez', 'justifiez', 'comparez', 'recommandez'],
+    categorie: 'pilotage',
+    type: 'methode',
+    priorite: 1,
+    definitionCours:
+      "Définissez / Citez → précision, exactitude (piège : délayer). Expliquez → mécanisme, logique du « pourquoi » (piège : rester descriptif). Analysez → décomposer avec un outil (piège : oublier l'outil). Discutez → thèse + antithèse + synthèse (piège : réponse à sens unique). Justifiez → prendre position et la défendre (piège : ne pas argumenter). Proposez / Recommandez → solutions concrètes + faisabilité, SAF (piège : rester théorique). Comparez → critères explicites, tableau (piège : juxtaposer sans critère).",
+    explicationSimple: "Le verbe de consigne commande la forme de la réponse. Surligne-le, ainsi que les mots-clés thématiques.",
+    phraseExamen:
+      "Les mots-clés thématiques (durable, numérique, alimentaire…) dictent les outils à sortir : « externe/environnement/marché » → PESTEL + Porter ; « interne/ressources/forces » → ressources + chaîne de valeur ; « modèle économique » → RCOV/BMC ; « durable/impact/circulaire » → BM durable + ODD + 3R ; « data center/IA/cloud » → sobriété + effet rebond ; « données/accessibilité » → RNE.",
+    motsCles: ['consigne', 'forme', 'attendu', 'piège'],
+    sources: ['methodologie'],
+    provenance: 'cours',
+  },
+]

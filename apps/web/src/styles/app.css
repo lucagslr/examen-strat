@@ -1,0 +1,524 @@
+/* =========================================================================
+   STRAT — coquille applicative et mises en page
+   Mobile-first : la barre de navigation est en bas ; à partir de 900 px,
+   elle devient une barre latérale gauche. La structure fonctionnelle est
+   identique dans les deux cas.
+   ========================================================================= */
+
+.appli {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- Contenu ------------------------------------------------------------ */
+.contenu {
+  flex: 1;
+  width: 100%;
+  max-width: var(--largeur-max);
+  margin: 0 auto;
+  padding: var(--e-4) var(--e-4) calc(var(--hauteur-barre-nav) + var(--e-6) + env(safe-area-inset-bottom, 0px));
+}
+
+.page__entete { margin-bottom: var(--e-5); }
+.page__titre { margin-bottom: var(--e-1); }
+.page__intro { color: var(--c-texte-2); font-size: var(--t-petit); max-width: var(--largeur-lecture); }
+
+.section { margin-bottom: var(--e-6); }
+.section__titre {
+  font-size: var(--t-h3);
+  margin-bottom: var(--e-3);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--e-3);
+  flex-wrap: wrap;
+}
+
+/* --- Barre de navigation ------------------------------------------------ */
+.nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  display: flex;
+  background: var(--c-fond-2);
+  border-top: 1px solid var(--c-bordure);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.nav__lien {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: var(--hauteur-barre-nav);
+  padding: var(--e-1) var(--e-1);
+  color: var(--c-texte-3);
+  text-decoration: none;
+  font-size: 0.7rem;
+  font-weight: 560;
+  /* La zone tactile occupe toute la hauteur de la barre. */
+  -webkit-tap-highlight-color: transparent;
+}
+
+.nav__lien[aria-current='page'] { color: var(--c-accent-fort); }
+.nav__lien[aria-current='page'] .nav__icone { background: var(--c-accent-doux); }
+
+.nav__icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 26px;
+  border-radius: var(--r-pilule);
+  transition: background var(--duree-rapide) var(--courbe);
+}
+
+/* --- En-tête mobile ----------------------------------------------------- */
+.entete {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--e-3);
+  padding: var(--e-2) var(--e-4);
+  background: color-mix(in srgb, var(--c-fond) 88%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--c-bordure);
+  min-height: 52px;
+}
+
+.entete__marque {
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  font-size: var(--t-petit);
+  color: var(--c-texte);
+  text-decoration: none;
+}
+
+.entete__actions { display: flex; gap: var(--e-1); align-items: center; }
+
+/* --- Barre latérale (desktop) ------------------------------------------ */
+@media (min-width: 900px) {
+  .appli { flex-direction: row; }
+
+  .nav {
+    position: sticky;
+    top: 0;
+    bottom: auto;
+    left: auto;
+    right: auto;
+    height: 100dvh;
+    width: var(--largeur-sidebar);
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: var(--e-1);
+    padding: var(--e-4) var(--e-3);
+    border-top: 0;
+    border-right: 1px solid var(--c-bordure);
+    flex: 0 0 auto;
+  }
+
+  .nav__marque {
+    display: block;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    font-size: 1rem;
+    padding: var(--e-2) var(--e-3) var(--e-5);
+    color: var(--c-texte);
+    text-decoration: none;
+  }
+
+  .nav__lien {
+    flex: 0 0 auto;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: var(--e-3);
+    min-height: var(--cible-tactile);
+    padding: var(--e-2) var(--e-3);
+    border-radius: var(--r-2);
+    font-size: var(--t-petit);
+  }
+
+  .nav__lien:hover { background: var(--c-fond-3); color: var(--c-texte); }
+  .nav__lien[aria-current='page'] { background: var(--c-accent-doux); }
+  .nav__icone { width: auto; height: auto; background: none !important; }
+
+  .nav__pied { margin-top: auto; }
+
+  .entete { display: none; }
+
+  .zone-principale { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+
+  .contenu { padding: var(--e-6) var(--e-6) var(--e-8); }
+}
+
+/* --- Grilles ------------------------------------------------------------ */
+.grille { display: grid; gap: var(--e-3); }
+.grille--2 { grid-template-columns: 1fr; }
+.grille--3 { grid-template-columns: 1fr; }
+.grille--auto { grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr)); }
+
+@media (min-width: 640px) {
+  .grille--2 { grid-template-columns: repeat(2, 1fr); }
+  .grille--3 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 1000px) {
+  .grille--3 { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* Fiche notion : une colonne sur mobile, deux sur grand écran. */
+.fiche { display: grid; gap: var(--e-5); grid-template-columns: 1fr; }
+
+@media (min-width: 1000px) {
+  .fiche { grid-template-columns: minmax(0, 1fr) 280px; align-items: start; }
+  .fiche__cote { position: sticky; top: var(--e-5); }
+}
+
+.pile { display: flex; flex-direction: column; gap: var(--e-3); }
+.pile--serree { gap: var(--e-2); }
+.pile--large { gap: var(--e-5); }
+.rangee { display: flex; gap: var(--e-2); align-items: center; flex-wrap: wrap; }
+.rangee--fin { justify-content: flex-end; }
+.rangee--espace { justify-content: space-between; }
+.rangee--sans-retour { flex-wrap: nowrap; }
+
+.pousse { margin-left: auto; }
+.centre { text-align: center; }
+.petit { font-size: var(--t-petit); }
+.legende { font-size: var(--t-legende); color: var(--c-texte-3); }
+.secondaire { color: var(--c-texte-2); }
+.sans-marge { margin: 0; }
+
+/* --- Fil d'Ariane conceptuel (traveling) -------------------------------- */
+.fil {
+  display: flex;
+  align-items: center;
+  gap: var(--e-1);
+  padding: var(--e-2) var(--e-3);
+  background: var(--c-fond-3);
+  border: 1px solid var(--c-bordure);
+  border-radius: var(--r-2);
+  font-size: var(--t-legende);
+  overflow-x: auto;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+
+.fil__etape {
+  flex: 0 0 auto;
+  border: 0;
+  background: transparent;
+  color: var(--c-texte-2);
+  cursor: pointer;
+  padding: var(--e-1) var(--e-2);
+  border-radius: var(--r-1);
+  font-size: inherit;
+  min-height: 32px;
+}
+
+.fil__etape:hover { background: var(--c-fond-2); color: var(--c-texte); }
+.fil__etape--courante { color: var(--c-accent-fort); font-weight: 620; }
+.fil__separateur { color: var(--c-texte-3); flex: 0 0 auto; }
+
+/* --- Liste de notions ---------------------------------------------------- */
+.liste-notions { list-style: none; margin: 0; padding: 0; }
+
+.liste-notions__item + .liste-notions__item { border-top: 1px solid var(--c-bordure); }
+
+.liste-notions__lien {
+  display: flex;
+  align-items: center;
+  gap: var(--e-3);
+  min-height: var(--cible-tactile);
+  padding: var(--e-3) var(--e-2);
+  color: inherit;
+  text-decoration: none;
+}
+
+.liste-notions__lien:hover { background: var(--c-fond-3); color: inherit; }
+.liste-notions__nom { font-weight: 560; }
+.liste-notions__meta { font-size: var(--t-legende); color: var(--c-texte-3); }
+.liste-notions__fin { margin-left: auto; display: flex; align-items: center; gap: var(--e-2); flex: 0 0 auto; }
+
+/* Ancres alphabétiques */
+.index-az {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e-1);
+  position: sticky;
+  top: 52px;
+  z-index: 20;
+  padding: var(--e-2) 0;
+  background: var(--c-fond);
+}
+
+@media (min-width: 900px) { .index-az { top: 0; } }
+
+.index-az__lettre {
+  min-width: 30px;
+  min-height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-1);
+  border: 1px solid var(--c-bordure);
+  background: var(--c-fond-2);
+  color: var(--c-texte-2);
+  font-size: var(--t-legende);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.index-az__lettre:hover { background: var(--c-accent-doux); color: var(--c-accent-fort); }
+.index-az__lettre:disabled { opacity: 0.3; cursor: default; }
+
+/* --- Flashcard ---------------------------------------------------------- */
+.flashcard {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 46vh;
+  padding: var(--e-5);
+  border: 1px solid var(--c-bordure);
+  border-radius: var(--r-3);
+  background: var(--c-fond-2);
+  text-align: center;
+  cursor: pointer;
+  box-shadow: var(--ombre-1);
+}
+
+.flashcard:hover { border-color: var(--c-bordure-forte); }
+.flashcard--retournee { background: var(--c-accent-doux); border-color: var(--c-accent); animation: retourner var(--duree) var(--courbe); }
+.flashcard__type { font-size: var(--t-legende); color: var(--c-texte-3); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: var(--e-4); }
+.flashcard__texte { font-size: 1.2rem; line-height: 1.45; }
+.flashcard__indice { margin-top: var(--e-5); font-size: var(--t-legende); color: var(--c-texte-3); }
+
+@keyframes retourner {
+  from { opacity: 0.4; transform: scale(0.985); }
+  to { opacity: 1; transform: none; }
+}
+
+.verdicts { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--e-2); }
+
+/* --- Quiz --------------------------------------------------------------- */
+.option {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--e-3);
+  width: 100%;
+  min-height: var(--cible-tactile);
+  padding: var(--e-3);
+  border: 1px solid var(--c-bordure-forte);
+  border-radius: var(--r-2);
+  background: var(--c-fond-2);
+  color: var(--c-texte);
+  text-align: left;
+  font-size: var(--t-petit);
+  cursor: pointer;
+}
+
+.option:hover:not(:disabled) { background: var(--c-fond-3); }
+.option:disabled { cursor: default; }
+.option[aria-pressed='true'] { border-color: var(--c-accent); background: var(--c-accent-doux); }
+
+/* Une fois la réponse corrigée, l'état de correction prime sur l'état de
+   sélection. Le double sélecteur égale la spécificité de `[aria-pressed]`,
+   et l'ordre de déclaration tranche en faveur de la correction. */
+.option.option--correcte { border-color: var(--c-succes); background: var(--c-succes-doux); }
+.option.option--incorrecte { border-color: var(--c-erreur); background: var(--c-erreur-doux); }
+.option__marque { flex: 0 0 auto; font-weight: 700; width: 1.4em; }
+/* L'explication est toujours sur sa propre ligne, y compris imbriquée dans un
+   <span> : sans cela elle se colle au libellé de l'option. */
+.option__explication {
+  display: block;
+  margin-top: var(--e-2);
+  font-size: var(--t-legende);
+  line-height: 1.5;
+  color: var(--c-texte-2);
+}
+
+.zone-depot {
+  min-height: 84px;
+  padding: var(--e-3);
+  border: 2px dashed var(--c-bordure-forte);
+  border-radius: var(--r-2);
+  background: var(--c-fond-3);
+}
+
+.zone-depot--survol { border-color: var(--c-accent); background: var(--c-accent-doux); }
+.zone-depot__titre { font-size: var(--t-legende); font-weight: 640; text-transform: uppercase; letter-spacing: 0.05em; color: var(--c-texte-2); margin-bottom: var(--e-2); }
+
+.etiquette-mobile {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e-2);
+  min-height: 40px;
+  padding: var(--e-2) var(--e-3);
+  border: 1px solid var(--c-bordure-forte);
+  border-radius: var(--r-2);
+  background: var(--c-fond-2);
+  font-size: var(--t-petit);
+  cursor: grab;
+}
+
+.etiquette-mobile[aria-pressed='true'] { border-color: var(--c-accent); background: var(--c-accent-doux); }
+
+/* --- Carte des notions --------------------------------------------------- */
+.carte-noeuds { display: flex; flex-wrap: wrap; gap: var(--e-2); }
+
+.noeud {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e-2);
+  min-height: var(--cible-tactile);
+  padding: var(--e-2) var(--e-3);
+  border: 1px solid var(--c-bordure-forte);
+  border-radius: var(--r-2);
+  background: var(--c-fond-2);
+  color: var(--c-texte);
+  font-size: var(--t-petit);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.noeud:hover { border-color: var(--c-accent); background: var(--c-accent-doux); color: var(--c-accent-fort); }
+.noeud--categorie { font-weight: 620; }
+.noeud__compteur { font-size: var(--t-legende); color: var(--c-texte-3); }
+
+/* --- Parcours ------------------------------------------------------------ */
+.etapes { list-style: none; margin: 0; padding: 0; }
+
+.etape {
+  position: relative;
+  padding-left: var(--e-6);
+  padding-bottom: var(--e-4);
+}
+
+.etape:last-child { padding-bottom: 0; }
+
+.etape::before {
+  content: '';
+  position: absolute;
+  left: 11px;
+  top: 22px;
+  bottom: 0;
+  width: 2px;
+  background: var(--c-bordure);
+}
+
+.etape:last-child::before { display: none; }
+
+.etape__pastille {
+  position: absolute;
+  left: 0;
+  top: 2px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid var(--c-bordure-forte);
+  background: var(--c-fond-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--t-legende);
+  font-weight: 640;
+  color: var(--c-texte-2);
+}
+
+.etape__pastille--faite { background: var(--c-accent); border-color: var(--c-accent); color: var(--c-accent-texte); }
+.etape__role { font-size: var(--t-petit); color: var(--c-texte-2); margin-top: var(--e-1); }
+
+/* --- Examen -------------------------------------------------------------- */
+.examen-scene {
+  display: flex;
+  flex-direction: column;
+  gap: var(--e-4);
+  min-height: 60vh;
+}
+
+.examen-entete {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--e-4);
+  flex-wrap: wrap;
+  padding: var(--e-4);
+  border: 1px solid var(--c-bordure);
+  border-radius: var(--r-3);
+  background: var(--c-fond-2);
+}
+
+.bloc-notes { display: grid; gap: var(--e-3); }
+.bloc-notes__champ { display: flex; flex-direction: column; }
+
+.checklist { list-style: none; margin: 0; padding: 0; }
+
+.checklist__item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--e-3);
+  min-height: var(--cible-tactile);
+  padding: var(--e-2) 0;
+  cursor: pointer;
+  font-size: var(--t-petit);
+}
+
+.checklist__case {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  accent-color: var(--c-accent);
+  cursor: pointer;
+}
+
+/* --- Cas pratiques ------------------------------------------------------- */
+.cas-texte p { margin-bottom: var(--e-4); }
+
+.extrait {
+  display: inline;
+  border-bottom: 2px dotted var(--c-bordure-forte);
+  cursor: pointer;
+  padding: 1px 2px;
+  border-radius: var(--r-1);
+}
+
+.extrait:hover { background: var(--c-accent-doux); }
+.extrait--marque { background: var(--c-accent-doux); border-bottom-color: var(--c-accent); }
+.extrait--juste { background: var(--c-succes-doux); border-bottom-color: var(--c-succes); }
+.extrait--faux { background: var(--c-erreur-doux); border-bottom-color: var(--c-erreur); }
+
+/* --- Divers -------------------------------------------------------------- */
+.banniere-hors-ligne {
+  display: flex;
+  align-items: center;
+  gap: var(--e-2);
+  padding: var(--e-2) var(--e-4);
+  background: var(--c-alerte-doux);
+  color: var(--c-alerte);
+  font-size: var(--t-legende);
+  border-bottom: 1px solid var(--c-bordure);
+}
+
+.mesure {
+  display: flex;
+  flex-direction: column;
+  gap: var(--e-1);
+  padding: var(--e-3);
+  border: 1px solid var(--c-bordure);
+  border-radius: var(--r-2);
+  background: var(--c-fond-2);
+}
+
+.mesure__valeur { font-size: 1.5rem; font-weight: 660; line-height: 1; font-variant-numeric: tabular-nums; }
+.mesure__libelle { font-size: var(--t-legende); color: var(--c-texte-2); }

@@ -1,0 +1,178 @@
+/* =========================================================================
+   STRAT — jetons de design
+   Sobre, académique, moderne. Une seule couleur d'accent ; les couleurs
+   secondaires ne servent qu'à la priorité, l'état, le succès, l'erreur.
+   Aucune information n'est jamais portée par la couleur seule.
+   ========================================================================= */
+
+:root {
+  /* --- Couleurs de base (thème clair) --- */
+  --c-fond: #fbfbfa;
+  --c-fond-2: #ffffff;
+  --c-fond-3: #f2f2f0;
+  --c-fond-inverse: #1c1c1a;
+
+  --c-texte: #1a1a18;
+  --c-texte-2: #55554f;
+  --c-texte-3: #7a7a72;
+  --c-texte-inverse: #fbfbfa;
+
+  --c-bordure: #e2e2dd;
+  --c-bordure-forte: #c9c9c2;
+
+  /* --- Accent unique --- */
+  --c-accent: #1d5f8a;
+  --c-accent-fort: #16496b;
+  --c-accent-doux: #e8f0f6;
+  --c-accent-texte: #ffffff;
+
+  /* --- Sémantique (état, jamais décoratif) --- */
+  --c-succes: #1f6f43;
+  --c-succes-doux: #e6f2eb;
+  --c-erreur: #a32a1f;
+  --c-erreur-doux: #fbeae8;
+  --c-alerte: #8a5a10;
+  --c-alerte-doux: #fbf1e0;
+  --c-info: #1d5f8a;
+  --c-info-doux: #e8f0f6;
+
+  /* --- Priorités d'examen --- */
+  --c-p1: #a32a1f;
+  --c-p1-doux: #fbeae8;
+  --c-p2: #8a5a10;
+  --c-p2-doux: #fbf1e0;
+  --c-p3: #55554f;
+  --c-p3-doux: #f2f2f0;
+
+  /* --- Typographie : polices système, aucune dépendance distante --- */
+  --f-corps: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+  --f-titre: var(--f-corps);
+  --f-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+
+  --t-h1: 1.75rem;
+  --t-h2: 1.3rem;
+  --t-h3: 1.075rem;
+  --t-corps: 1rem;
+  --t-petit: 0.875rem;
+  --t-legende: 0.78rem;
+
+  --lh-titre: 1.22;
+  --lh-corps: 1.62;
+
+  /* --- Espacements : échelle unique, jamais de valeur arbitraire --- */
+  --e-0: 0;
+  --e-1: 0.25rem;
+  --e-2: 0.5rem;
+  --e-3: 0.75rem;
+  --e-4: 1rem;
+  --e-5: 1.5rem;
+  --e-6: 2rem;
+  --e-7: 3rem;
+  --e-8: 4rem;
+
+  --r-1: 4px;
+  --r-2: 8px;
+  --r-3: 12px;
+  --r-pilule: 999px;
+
+  --ombre-1: 0 1px 2px rgb(0 0 0 / 6%);
+  --ombre-2: 0 2px 8px rgb(0 0 0 / 8%);
+  --ombre-3: 0 8px 28px rgb(0 0 0 / 12%);
+
+  /* --- Mesures --- */
+  --largeur-lecture: 68ch;
+  --largeur-max: 1180px;
+  --hauteur-barre-nav: 60px;
+  --largeur-sidebar: 232px;
+  /* Cible tactile minimale recommandée. */
+  --cible-tactile: 44px;
+
+  --duree-rapide: 120ms;
+  --duree: 200ms;
+  --duree-lente: 340ms;
+  --courbe: cubic-bezier(0.2, 0, 0.2, 1);
+}
+
+/* Thème sombre : par préférence système, sauf choix explicite contraire. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='clair']) {
+    --c-fond: #16161a;
+    --c-fond-2: #1e1e23;
+    --c-fond-3: #26262c;
+    --c-fond-inverse: #f2f2f0;
+
+    --c-texte: #ececea;
+    --c-texte-2: #b3b3ad;
+    --c-texte-3: #8b8b85;
+    --c-texte-inverse: #16161a;
+
+    --c-bordure: #33333a;
+    --c-bordure-forte: #4a4a53;
+
+    --c-accent: #6fb3dd;
+    --c-accent-fort: #97cbec;
+    --c-accent-doux: #1b2f3d;
+    --c-accent-texte: #0d1b25;
+
+    --c-succes: #63c48d;
+    --c-succes-doux: #17301f;
+    --c-erreur: #f08a7e;
+    --c-erreur-doux: #33191a;
+    --c-alerte: #e0b063;
+    --c-alerte-doux: #2f2517;
+    --c-info: #6fb3dd;
+    --c-info-doux: #1b2f3d;
+
+    --c-p1: #f08a7e;
+    --c-p1-doux: #33191a;
+    --c-p2: #e0b063;
+    --c-p2-doux: #2f2517;
+    --c-p3: #b3b3ad;
+    --c-p3-doux: #26262c;
+
+    --ombre-1: 0 1px 2px rgb(0 0 0 / 40%);
+    --ombre-2: 0 2px 8px rgb(0 0 0 / 45%);
+    --ombre-3: 0 8px 28px rgb(0 0 0 / 55%);
+  }
+}
+
+/* Choix explicite de l'utilisateur : il gagne dans les deux sens. */
+:root[data-theme='sombre'] {
+  --c-fond: #16161a;
+  --c-fond-2: #1e1e23;
+  --c-fond-3: #26262c;
+  --c-fond-inverse: #f2f2f0;
+
+  --c-texte: #ececea;
+  --c-texte-2: #b3b3ad;
+  --c-texte-3: #8b8b85;
+  --c-texte-inverse: #16161a;
+
+  --c-bordure: #33333a;
+  --c-bordure-forte: #4a4a53;
+
+  --c-accent: #6fb3dd;
+  --c-accent-fort: #97cbec;
+  --c-accent-doux: #1b2f3d;
+  --c-accent-texte: #0d1b25;
+
+  --c-succes: #63c48d;
+  --c-succes-doux: #17301f;
+  --c-erreur: #f08a7e;
+  --c-erreur-doux: #33191a;
+  --c-alerte: #e0b063;
+  --c-alerte-doux: #2f2517;
+  --c-info: #6fb3dd;
+  --c-info-doux: #1b2f3d;
+
+  --c-p1: #f08a7e;
+  --c-p1-doux: #33191a;
+  --c-p2: #e0b063;
+  --c-p2-doux: #2f2517;
+  --c-p3: #b3b3ad;
+  --c-p3-doux: #26262c;
+
+  --ombre-1: 0 1px 2px rgb(0 0 0 / 40%);
+  --ombre-2: 0 2px 8px rgb(0 0 0 / 45%);
+  --ombre-3: 0 8px 28px rgb(0 0 0 / 55%);
+}

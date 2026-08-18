@@ -1,0 +1,101 @@
+name: CI et déploiement
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# Le déploiement écrit sur GitHub Pages : permissions minimales et explicites.
+permissions:
+  contents: read
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verifier:
+    name: Vérifications
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Installer les dépendances
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      # Le build échoue si le corpus contient la moindre erreur structurelle :
+      # référence cassée, question orpheline, option fausse sans explication…
+      - name: Validation du contenu
+        run: npm run validate:content
+
+      - name: Rapport de couverture du contenu
+        run: npm run report:content
+
+      - name: Tests
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      # Le site doit fonctionner dans un sous-chemin, pas seulement à la racine.
+      - name: Build dans un sous-chemin (simulation GitHub Pages)
+        run: VITE_BASE=/strat-test/ npm run build
+
+      - name: Audit final
+        run: npm run audit:final
+
+      - name: Conserver le site construit
+        uses: actions/upload-artifact@v4
+        with:
+          name: site
+          path: apps/web/dist
+          retention-days: 7
+
+  deployer:
+    name: Déployer sur GitHub Pages
+    # Le déploiement n'a lieu que si TOUT a réussi, et seulement sur main.
+    needs: verifier
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploiement.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      # `base` est relatif dans vite.config.ts : le site fonctionne aussi bien
+      # à la racine d'un domaine que sous `/nom-du-depot/`, sans configuration.
+      - name: Build de production
+        run: npm run build
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: apps/web/dist
+
+      - id: deploiement
+        uses: actions/deploy-pages@v4

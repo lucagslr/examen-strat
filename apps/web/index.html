@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>STRAT — révision de stratégie</title>
+    <meta
+      name="description"
+      content="Application locale de révision du cours de stratégie : notions, relations, flashcards, quiz, cas pratiques et simulation d'examen oral."
+    />
+    <meta name="theme-color" content="#1d5f8a" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#16161a" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light dark" />
+
+    <!-- Installation sur l'écran d'accueil (iOS et Android) -->
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" type="image/svg+xml" href="./icone.svg" />
+    <link rel="apple-touch-icon" href="./icone-180.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="STRAT" />
+    <meta name="mobile-web-app-capable" content="yes" />
+
+    <!-- Aucun script distant, aucune police distante, aucune connexion sortante. -->
+    <script>
+      // Applique le thème avant le premier rendu pour éviter tout clignotement.
+      try {
+        var p = JSON.parse(localStorage.getItem('strat.prefs.v1') || '{}')
+        if (p.theme === 'clair' || p.theme === 'sombre') document.documentElement.dataset.theme = p.theme
+        if (p.animationsReduites) document.documentElement.dataset.animations = 'reduites'
+        if (typeof p.tailleTexte === 'number')
+          document.documentElement.style.setProperty('--echelle-texte', String(p.tailleTexte / 100))
+      } catch (e) {
+        /* préférences illisibles : on garde les valeurs par défaut */
+      }
+    </script>
+  </head>
+  <body>
+    <div id="racine"></div>
+    <noscript>
+      <p style="padding: 2rem; font-family: system-ui, sans-serif">
+        STRAT a besoin de JavaScript pour fonctionner. Tout le contenu du cours est embarqué dans la page : aucune
+        donnée n'est envoyée à un serveur.
+      </p>
+    </noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,39 @@
+{
+  "name": "STRAT — révision de stratégie",
+  "short_name": "STRAT",
+  "description": "Application locale de révision du cours de stratégie : notions, relations, flashcards, quiz, cas pratiques et simulation d'examen oral.",
+  "start_url": "./index.html#/",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#fbfbfa",
+  "theme_color": "#1d5f8a",
+  "lang": "fr",
+  "dir": "ltr",
+  "categories": ["education", "productivity"],
+  "icons": [
+    {
+      "src": "./icone.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icone-180.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icone-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    { "name": "Réviser", "url": "./index.html#/review/flashcards" },
+    { "name": "S'entraîner", "url": "./index.html#/training" },
+    { "name": "Simulation d'examen", "url": "./index.html#/exam" }
+  ]
+}

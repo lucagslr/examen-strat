@@ -1,0 +1,17 @@
+# Fins de ligne normalisées en LF dans le dépôt, quel que soit le système
+# de la personne qui contribue. Évite des diffs entiers pour un simple CRLF.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.ico binary
+*.woff  binary
+*.woff2 binary
+
+# Le lockfile est généré : le masquer dans les diffs de revue.
+package-lock.json linguist-generated=true diff=none
+
+# Les documents du cours ne sont pas du code : ne pas fausser les statistiques
+# de langage du dépôt.
+sources/** linguist-documentation
+docs/** linguist-documentation
