@@ -1,0 +1,675 @@
+/* =========================================================================
+   STRAT — module Questions
+   ---------------------------------------------------------------------------
+   Aucune couleur, aucun espacement, aucun rayon n'est inventé ici : tout vient
+   des jetons existants, pour que la section paraisse avoir toujours fait partie
+   de l'application, en thème clair comme en thème sombre.
+
+   Ce fichier n'est importé que par la route « Questions » : les autres écrans
+   ne le téléchargent pas.
+   ========================================================================= */
+
+/* ------------------------------------------------------------ Index : cartes */
+
+.q-cartes {
+  list-style: none;
+  margin: var(--e-3) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--e-3);
+}
+
+@media (min-width: 720px) {
+  .q-cartes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.q-carte {
+  margin: 0;
+  display: flex;
+}
+
+.q-carte__lien {
+  display: flex;
+  flex-direction: column;
+  gap: var(--e-2);
+  width: 100%;
+  /* Zone tactile généreuse : la carte entière est le lien. */
+  min-height: calc(var(--cible-tactile) * 2);
+  padding: var(--e-4);
+  border: 1px solid var(--c-bordure);
+  border-radius: var(--r-3);
+  background: var(--c-fond-2);
+  color: inherit;
+  text-decoration: none;
+  transition:
+    border-color var(--duree-rapide) var(--courbe),
+    background var(--duree-rapide) var(--courbe);
+}
+
+.q-carte__lien:hover {
+  border-color: var(--c-accent);
+  background: var(--c-fond-3);
+  color: inherit;
+}
+
+.q-carte__entete {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--e-2);
+}
+
+.q-carte__numero {
+  font-family: var(--f-mono);
+  font-size: var(--t-legende);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--c-accent-fort);
+}
+
+.q-carte__question {
+  font-size: var(--t-h3);
+  font-weight: 620;
+  line-height: var(--lh-titre);
+  text-wrap: balance;
+}
+
+.q-carte__meta {
+  font-size: var(--t-legende);
+  color: var(--c-texte-3);
+}
+
+.q-carte__action {
+  margin-top: auto;
+  padding-top: var(--e-2);
+  font-size: var(--t-petit);
+  font-weight: 560;
+  color: var(--c-accent);
+}
+
+.q-cartes--compact .q-carte__lien {
+  min-height: var(--cible-tactile);
+  padding: var(--e-3) var(--e-4);
+}
+
+.q-cartes--compact .q-carte__question {
+  font-size: var(--t-petit);
+  font-weight: 560;
+}
+
+.q-chip__compteur {
+  color: var(--c-texte-3);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ------------------------------------------------------ Index : ressources */
+
+.q-ressource {
+  display: flex;
+  flex-direction: column;
+  gap: var(--e-1);
+  min-height: var(--cible-tactile);
+  padding: var(--e-3) var(--e-4);
+  border: 1px dashed var(--c-bordure-forte);
+  border-radius: var(--r-2);
+  background: var(--c-fond-2);
+  color: inherit;
+  text-decoration: none;
+}
+
+.q-ressource:hover {
+  border-color: var(--c-accent);
+  background: var(--c-accent-doux);
+  color: inherit;
+}
+
+.q-ressource__titre {
+  font-weight: 560;
+  font-size: var(--t-petit);
+}
+
+/* ------------------------------------------------------------ Index : légende */
+
+.q-legende {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--e-3);
+}
+
+.q-legende li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--e-3);
+  margin: 0;
+  font-size: var(--t-petit);
+}
+
+.q-legende__signe {
+  flex: 0 0 auto;
+  width: 1.5em;
+  font-size: 1.05em;
+  line-height: 1.5;
+}
+
+/* ============================================================== La fiche */
+
+.q-retour {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e-2);
+  min-height: var(--cible-tactile);
+  font-size: var(--t-petit);
+  font-weight: 560;
+  text-decoration: none;
+}
+
+.q-fiche__entete {
+  margin-bottom: var(--e-5);
+}
+
+.q-fiche__numero {
+  margin: 0 0 var(--e-1);
+  font-family: var(--f-mono);
+  font-size: var(--t-petit);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--c-accent-fort);
+}
+
+.q-fiche__titre {
+  margin-bottom: var(--e-2);
+  /* Un titre long doit rester lisible sur un écran de 320 px. */
+  overflow-wrap: break-word;
+}
+
+.q-fiche__meta {
+  margin: 0;
+  font-size: var(--t-legende);
+  color: var(--c-texte-3);
+}
+
+/* ----------------------------------------------- Niveau 1 : réponse en une phrase */
+
+.q-reponse {
+  margin-bottom: var(--e-5);
+  padding: var(--e-4) var(--e-5);
+  border: 1px solid var(--c-accent);
+  border-left-width: 4px;
+  border-radius: var(--r-3);
+  background: var(--c-accent-doux);
+}
+
+.q-reponse__intitule {
+  margin: 0 0 var(--e-2);
+  font-size: var(--t-legende);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-accent-fort);
+}
+
+.q-reponse__corps {
+  font-size: 1.05rem;
+  line-height: 1.55;
+}
+
+.q-reponse__corps > :last-child {
+  margin-bottom: 0;
+}
+
+.q-avertissements {
+  margin-bottom: var(--e-5);
+}
+
+/* ----------------------------------------------------------------- Sommaire */
+
+.q-sommaire {
+  padding: var(--e-3) var(--e-4);
+  border: 1px solid var(--c-bordure);
+  border-radius: var(--r-2);
+  background: var(--c-fond-2);
+}
+
+.q-sommaire--repliable {
+  margin-bottom: var(--e-5);
+  padding: 0;
+}
+
+.q-sommaire--repliable > summary {
+  min-height: var(--cible-tactile);
+  display: flex;
+  align-items: center;
+  padding: var(--e-2) var(--e-4);
+  font-size: var(--t-petit);
+  font-weight: 560;
+  cursor: pointer;
+  border-radius: var(--r-2);
+}
+
+.q-sommaire--repliable[open] > summary {
+  border-bottom: 1px solid var(--c-bordure);
+}
+
+.q-sommaire__titre {
+  margin: 0 0 var(--e-2);
+  font-size: var(--t-legende);
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--c-texte-3);
+}
+
+.q-sommaire__liste {
+  list-style: none;
+  margin: 0;
+  padding: var(--e-2) var(--e-2) var(--e-2);
+  counter-reset: sommaire;
+}
+
+.q-sommaire__liste li {
+  margin: 0;
+}
+
+.q-sommaire__lien {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  min-height: var(--cible-tactile);
+  padding: var(--e-2);
+  border: 0;
+  border-radius: var(--r-1);
+  background: transparent;
+  color: var(--c-texte-2);
+  text-align: left;
+  font-size: var(--t-petit);
+  cursor: pointer;
+}
+
+.q-sommaire__lien:hover {
+  background: var(--c-fond-3);
+  color: var(--c-texte);
+}
+
+.q-sommaire__intitule {
+  font-size: var(--t-legende);
+  font-weight: 640;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--c-texte-3);
+}
+
+/* ------------------------------------------------- Niveau 2 et 3 : les parties */
+
+.q-corps {
+  min-width: 0;
+}
+
+.q-intro {
+  margin-bottom: var(--e-5);
+}
+
+.q-section {
+  margin-bottom: var(--e-6);
+  padding-top: var(--e-5);
+  border-top: 1px solid var(--c-bordure);
+}
+
+.q-section:first-of-type {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.q-section__titre {
+  display: flex;
+  flex-direction: column;
+  gap: var(--e-1);
+  font-size: var(--t-h2);
+  margin-bottom: var(--e-4);
+  scroll-margin-top: 68px;
+}
+
+@media (min-width: 900px) {
+  .q-section__titre {
+    scroll-margin-top: var(--e-4);
+  }
+}
+
+.q-section__intitule {
+  font-size: var(--t-legende);
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--c-accent);
+}
+
+/* La synthèse finale et les pièges se distinguent du développement. */
+.q-section--retenir,
+.q-section--pieges {
+  padding: var(--e-5);
+  border: 1px solid var(--c-bordure);
+  border-radius: var(--r-3);
+  background: var(--c-fond-2);
+}
+
+.q-section--retenir .q-section__titre,
+.q-section--pieges .q-section__titre {
+  margin-top: 0;
+}
+
+.q-sous-titre {
+  margin-top: var(--e-5);
+  margin-bottom: var(--e-3);
+  font-size: var(--t-h3);
+  scroll-margin-top: 68px;
+}
+
+.q-corps p,
+.q-reponse__corps p {
+  max-width: var(--largeur-lecture);
+}
+
+.q-liste {
+  max-width: var(--largeur-lecture);
+  padding-left: var(--e-5);
+}
+
+.q-liste li {
+  margin-bottom: var(--e-2);
+}
+
+.q-filet {
+  margin: var(--e-5) 0;
+}
+
+/* ------------------------------------------------------ Marqueurs du corpus */
+
+/* Le sens n'est jamais porté par la seule couleur : le signe du corpus reste
+   affiché, et un libellé caché l'explicite pour les lecteurs d'écran. */
+.q-marque {
+  max-width: var(--largeur-lecture);
+  padding: var(--e-2) var(--e-3);
+  border-left: 3px solid var(--c-bordure-forte);
+  border-radius: 0 var(--r-1) var(--r-1) 0;
+  background: var(--c-fond-3);
+}
+
+.q-marque--cours {
+  border-left-color: var(--c-info);
+  background: var(--c-info-doux);
+}
+
+.q-marque--raisonnement {
+  border-left-color: var(--c-succes);
+  background: var(--c-succes-doux);
+}
+
+.q-marque--complement {
+  border-left-color: var(--c-texte-3);
+  background: var(--c-fond-3);
+}
+
+.q-marque--attention {
+  border-left-color: var(--c-alerte);
+  background: var(--c-alerte-doux);
+}
+
+/* ------------------------------------------------------------- Encadrés */
+
+.q-encadre {
+  margin: var(--e-4) 0;
+  padding: var(--e-4);
+  border: 1px solid var(--c-bordure-forte);
+  border-left-width: 4px;
+  border-radius: var(--r-2);
+  background: var(--c-fond-2);
+}
+
+.q-encadre__titre {
+  display: flex;
+  align-items: baseline;
+  gap: var(--e-2);
+  margin: 0 0 var(--e-3);
+  font-size: var(--t-petit);
+  font-weight: 660;
+}
+
+.q-encadre__signe {
+  flex: 0 0 auto;
+}
+
+.q-encadre__corps > :last-child {
+  margin-bottom: 0;
+}
+
+.q-encadre--danger {
+  border-color: var(--c-erreur);
+  background: var(--c-erreur-doux);
+}
+
+.q-encadre--danger .q-encadre__titre {
+  color: var(--c-erreur);
+}
+
+.q-encadre--warning {
+  border-color: var(--c-alerte);
+  background: var(--c-alerte-doux);
+}
+
+.q-encadre--warning .q-encadre__titre {
+  color: var(--c-alerte);
+}
+
+.q-encadre--note,
+.q-encadre--info {
+  border-color: var(--c-info);
+  background: var(--c-info-doux);
+}
+
+.q-encadre--tip {
+  border-color: var(--c-succes);
+  background: var(--c-succes-doux);
+}
+
+.q-citation {
+  margin: var(--e-4) 0;
+  padding-left: var(--e-4);
+  border-left: 3px solid var(--c-bordure-forte);
+  color: var(--c-texte-2);
+}
+
+/* --------------------------------------------------------------- Tableaux */
+
+.q-tableau {
+  margin: var(--e-4) 0;
+  border: 1px solid var(--c-bordure);
+  border-radius: var(--r-2);
+  scrollbar-width: thin;
+}
+
+.q-tableau table {
+  /* Les colonnes prennent la largeur de leur contenu : un tableau étroit tient
+     dans l'écran, un tableau large fait défiler son conteneur — jamais la page,
+     et sans jamais réduire la taille du texte. */
+  width: max-content;
+  min-width: 100%;
+  border-collapse: collapse;
+  font-size: var(--t-petit);
+}
+
+.q-tableau th,
+.q-tableau td {
+  border: 0;
+  border-bottom: 1px solid var(--c-bordure);
+  border-right: 1px solid var(--c-bordure);
+  padding: var(--e-3);
+  max-width: 24rem;
+  vertical-align: top;
+  text-align: left;
+}
+
+.q-tableau th:last-child,
+.q-tableau td:last-child {
+  border-right: 0;
+}
+
+.q-tableau tr:last-child td,
+.q-tableau tr:last-child th {
+  border-bottom: 0;
+}
+
+.q-tableau thead th {
+  position: sticky;
+  top: 0;
+  background: var(--c-fond-3);
+  font-weight: 640;
+}
+
+/* Tableau de synthèse : la première colonne est l'intitulé de la ligne. */
+.q-tableau--synthese tbody th {
+  background: var(--c-fond-3);
+  font-weight: 620;
+  white-space: normal;
+  min-width: 9rem;
+}
+
+/* -------------------------------------------------------- Blocs monospace */
+
+.q-code {
+  margin: var(--e-4) 0;
+  border: 1px solid var(--c-bordure);
+  border-radius: var(--r-2);
+  background: var(--c-fond-3);
+  scrollbar-width: thin;
+}
+
+.q-code pre {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  /* Les schémas en barres du corpus n'ont de sens qu'alignés au caractère près. */
+  white-space: pre;
+  overflow: visible;
+  font-size: var(--t-legende);
+  line-height: 1.5;
+}
+
+/* ---------------------------------------------------------------- Schémas */
+
+.q-schema {
+  margin: var(--e-5) 0;
+}
+
+.q-schema__cadre {
+  padding: var(--e-4);
+  border: 1px solid var(--c-bordure);
+  border-radius: var(--r-3);
+  background: var(--c-fond-2);
+  scrollbar-width: thin;
+  /* Centre le schéma quand il tient dans la largeur, laisse défiler sinon. */
+  display: flex;
+  justify-content: center;
+}
+
+/* `display: flex` l'emporterait sur la règle par défaut de l'attribut
+   `hidden` : sans cette ligne, un cadre vide resterait visible pendant que le
+   schéma se dessine. */
+.q-schema__cadre[hidden] {
+  display: none;
+}
+
+.q-schema__cadre > svg {
+  flex: 0 0 auto;
+}
+
+.q-schema__legende {
+  margin-top: var(--e-2);
+  font-size: var(--t-legende);
+  color: var(--c-texte-3);
+  text-align: center;
+}
+
+.q-schema__repli {
+  margin-top: var(--e-2);
+  font-size: var(--t-petit);
+}
+
+.q-schema__repli summary {
+  min-height: var(--cible-tactile);
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: var(--c-texte-2);
+}
+
+/* ----------------------------------------------------------------- Renvois */
+
+.q-renvoi {
+  font-weight: 560;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 0.2em;
+}
+
+.q-renvoi--absent {
+  color: var(--c-texte-3);
+  font-style: italic;
+  text-decoration: none;
+  border-bottom: 1px dotted var(--c-bordure-forte);
+}
+
+.q-voir-aussi {
+  margin-top: var(--e-6);
+  padding-top: var(--e-5);
+  border-top: 1px solid var(--c-bordure);
+}
+
+/* -------------------------------------------------- Navigation entre fiches */
+
+.q-navigation {
+  display: grid;
+  gap: var(--e-3);
+  margin-top: var(--e-6);
+  padding-top: var(--e-5);
+  border-top: 1px solid var(--c-bordure);
+}
+
+@media (min-width: 640px) {
+  .q-navigation {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.q-navigation__lien {
+  display: flex;
+  flex-direction: column;
+  gap: var(--e-1);
+  min-height: var(--cible-tactile);
+  padding: var(--e-3) var(--e-4);
+  border: 1px solid var(--c-bordure);
+  border-radius: var(--r-2);
+  background: var(--c-fond-2);
+  color: inherit;
+  text-decoration: none;
+}
+
+.q-navigation__lien:hover {
+  border-color: var(--c-accent);
+  background: var(--c-fond-3);
+  color: inherit;
+}
+
+.q-navigation__lien--fin {
+  text-align: right;
+}
+
+.q-navigation__titre {
+  font-size: var(--t-petit);
+  font-weight: 560;
+  line-height: var(--lh-titre);
+}

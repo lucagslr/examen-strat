@@ -65,6 +65,17 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+/* Six entrées depuis l'ajout de « Questions » : le libellé le plus long doit
+   rester lisible sur un écran de 320 px, sans jamais déborder de la barre. */
+@media (max-width: 899px) {
+  .nav__lien { min-width: 0; padding-left: 2px; padding-right: 2px; }
+  .nav__lien > span:last-child { max-width: 100%; text-align: center; line-height: 1.15; overflow-wrap: break-word; }
+}
+
+@media (max-width: 420px) {
+  .nav__lien { font-size: 0.64rem; }
+}
+
 .nav__lien[aria-current='page'] { color: var(--c-accent-fort); }
 .nav__lien[aria-current='page'] .nav__icone { background: var(--c-accent-doux); }
 

@@ -30,6 +30,9 @@ export default defineConfig(({ mode }) => ({
       output: {
         manualChunks(id) {
           if (id.includes('packages/content/src')) return 'corpus'
+          // Les fiches Markdown forment un fragment à part : elles changent
+          // indépendamment du code, et ne sont chargées qu'avec leur route.
+          if (/[\\/]questions[\\/][^\\/]+\.md/.test(id)) return 'questions'
           if (id.includes('node_modules/react')) return 'react'
         },
       },

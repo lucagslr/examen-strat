@@ -21,6 +21,8 @@ const Jeux = lazy(() => import('@app/routes/Jeux').then((m) => ({ default: m.Jeu
 const Jeu = lazy(() => import('@app/routes/Jeux').then((m) => ({ default: m.Jeu })))
 const ListeCas = lazy(() => import('@app/routes/Cas').then((m) => ({ default: m.ListeCas })))
 const FicheCas = lazy(() => import('@app/routes/Cas').then((m) => ({ default: m.FicheCas })))
+const Questions = lazy(() => import('@app/routes/Questions').then((m) => ({ default: m.Questions })))
+const FicheQuestion = lazy(() => import('@app/routes/Questions').then((m) => ({ default: m.FicheQuestion })))
 const Examen = lazy(() => import('@app/routes/Examen').then((m) => ({ default: m.Examen })))
 const Historique = lazy(() => import('@app/routes/Examen').then((m) => ({ default: m.Historique })))
 const Reglages = lazy(() => import('@app/routes/Reglages').then((m) => ({ default: m.Reglages })))
@@ -52,6 +54,9 @@ const ROUTES: { motif: string; rendre: (params: Record<string, string>) => React
   { motif: '/training/games/:id', rendre: (p) => <Jeu id={p.id ?? ''} /> },
   { motif: '/training/cases', rendre: () => <ListeCas /> },
   { motif: '/training/cases/:id', rendre: (p) => <FicheCas id={p.id ?? ''} /> },
+
+  { motif: '/questions', rendre: () => <Questions /> },
+  { motif: '/questions/:slug', rendre: (p) => <FicheQuestion slug={p.slug ?? ''} /> },
 
   { motif: '/exam', rendre: () => <Examen /> },
   { motif: '/history', rendre: () => <Historique /> },

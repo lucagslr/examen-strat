@@ -178,6 +178,15 @@ export function Accueil() {
       <Section titre="Aller directement">
         <div className="grille grille--auto">
           <Carte variante="plate">
+            <h3 className="carte__titre">Questions d'examen</h3>
+            <p className="legende">
+              Les questions corrigées : réponse en une phrase, développement, schémas et pièges.
+            </p>
+            <Bouton pleineLargeur style={{ marginTop: 'var(--e-3)' }} onClick={() => naviguer('/questions')}>
+              Ouvrir
+            </Bouton>
+          </Carte>
+          <Carte variante="plate">
             <h3 className="carte__titre">Simulation d'examen</h3>
             <p className="legende">10 minutes de préparation, 10 minutes de passage — le format du cours.</p>
             <Bouton pleineLargeur style={{ marginTop: 'var(--e-3)' }} onClick={() => naviguer('/exam')}>

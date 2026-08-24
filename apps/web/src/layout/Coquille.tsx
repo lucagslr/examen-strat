@@ -5,9 +5,9 @@ import { useProgression } from '@app/state/ProgressionContext'
 
 /**
  * COQUILLE APPLICATIVE.
- * Cinq entrées principales, jamais plus : Accueil, Notions, Réviser,
- * S'entraîner, Examen. Barre en bas sur mobile, barre latérale sur desktop —
- * même structure fonctionnelle dans les deux cas.
+ * Six entrées principales, jamais plus : Accueil, Notions, Réviser,
+ * S'entraîner, Examen, Questions. Barre en bas sur mobile, barre latérale sur
+ * desktop — même structure fonctionnelle dans les deux cas.
  */
 
 interface Entree {
@@ -49,6 +49,12 @@ const ENTREES: Entree[] = [
     libelle: 'Examen',
     prefixes: ['/exam', '/history'],
     icone: ico('M12 3 3 7l9 4 9-4-9-4ZM7 10v5c0 1.5 2.2 3 5 3s5-1.5 5-3v-5'),
+  },
+  {
+    chemin: '/questions',
+    libelle: 'Questions',
+    prefixes: ['/questions'],
+    icone: ico('M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18M9.6 9.3a2.5 2.5 0 0 1 4.8.7c0 1.7-2.4 2-2.4 3.5M12 17h.01'),
   },
 ]
 
