@@ -121,9 +121,13 @@ describe('corpus des questions', () => {
     expect(schemas).toBe(attendus)
   })
 
-  it('reconnaît la réponse en une phrase de chaque fiche d’examen', () => {
-    const sans = fiches.filter((q) => structurerFiche(blocsDe(q)).reponseCle === null)
-    expect(sans).toHaveLength(0)
+  it('reconnaît la réponse en une phrase partout où le fichier en contient une', () => {
+    // Les mises en situation n'ont pas cet encadré : elles s'ouvrent sur une
+    // situation d'entreprise. On vérifie donc l'extraction là où elle existe.
+    const avecEncadre = fiches.filter((q) => /La réponse en une phrase/i.test(q.source))
+    expect(avecEncadre.length).toBeGreaterThan(50)
+    const manquees = avecEncadre.filter((q) => structurerFiche(blocsDe(q)).reponseCle === null)
+    expect(manquees).toHaveLength(0)
   })
 
   it('découpe chaque fiche en sections navigables', () => {

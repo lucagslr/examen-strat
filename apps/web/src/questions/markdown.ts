@@ -115,12 +115,18 @@ export function analyserInline(source: string, options: OptionsInline = {}): Inl
     if (jeton.startsWith('`')) {
       sortie.push({ t: 'code', v: jeton.slice(1, -1) })
     } else if (jeton.startsWith('[[')) {
-      const cible = jeton.slice(2, -2).trim()
+      // Deux formes coexistent dans le corpus : `[[cible]]` et
+      // `[[cible|libellé affiché]]`. Le libellé explicite gagne, sinon on
+      // affiche le titre de la fiche visée.
+      const interieur = jeton.slice(2, -2)
+      const coupe = interieur.indexOf('|')
+      const cible = (coupe < 0 ? interieur : interieur.slice(0, coupe)).trim()
+      const alias = coupe < 0 ? '' : interieur.slice(coupe + 1).trim()
       const resolu = options.resoudreRenvoi?.(cible) ?? null
       sortie.push(
         resolu
-          ? { t: 'renvoi', cible: resolu.slug, libelle: resolu.libelle }
-          : { t: 'renvoi', cible: null, libelle: libelleDeSecours(cible) },
+          ? { t: 'renvoi', cible: resolu.slug, libelle: alias || resolu.libelle }
+          : { t: 'renvoi', cible: null, libelle: alias || libelleDeSecours(cible) },
       )
     } else if (jeton.startsWith('[')) {
       const coupe = jeton.indexOf('](')
@@ -334,6 +340,8 @@ function cellules(ligne: string): string[] {
   return ligne
     .replace(/^\|/, '')
     .replace(/\|$/, '')
-    .split('|')
-    .map((c) => c.trim())
+    // Une barre échappée `\|` appartient à la cellule : c'est ainsi que le
+    // corpus écrit un renvoi `[[cible\|libellé]]` à l'intérieur d'un tableau.
+    .split(/(?<!\\)\|/)
+    .map((c) => c.trim().replace(/\\\|/g, '|'))
 }

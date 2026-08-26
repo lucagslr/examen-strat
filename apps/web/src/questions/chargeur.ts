@@ -117,11 +117,15 @@ function lireIndex(): { ordre: string[]; groupes: Map<string, string> } {
   const ordre: string[] = []
   const groupes = new Map<string, string>()
 
+  // Les index sont classés par la première question qu'ils citent : une série
+  // qui commence à Q56 se lit après une série qui commence à Q01, quel que
+  // soit le nom du fichier.
   const cheminsIndex = Object.keys(FICHIERS)
     .filter((c) => /\/00_/.test(c))
-    .sort()
+    .map((chemin) => ({ chemin, depart: premiereQuestionCitee(FICHIERS[chemin] as string) }))
+    .sort((a, b) => a.depart - b.depart || a.chemin.localeCompare(b.chemin))
 
-  for (const chemin of cheminsIndex) {
+  for (const { chemin } of cheminsIndex) {
     let sectionCourante: string | null = null
     for (const ligne of (FICHIERS[chemin] as string).split(/\r?\n/)) {
       const titre = ligne.match(/^#{2,3}\s+(.*)$/)
@@ -129,18 +133,32 @@ function lireIndex(): { ordre: string[]; groupes: Map<string, string> } {
         sectionCourante = nettoyerIntituleSection((titre[1] as string).trim())
         continue
       }
-      const renvoi = ligne.match(/^\s*-\s*\[\[([^\]]+)\]\]/)
-      if (renvoi && sectionCourante) {
-        const base = (renvoi[1] as string).trim()
-        if (!groupes.has(base)) {
-          groupes.set(base, sectionCourante)
-          ordre.push(base)
-        }
+      // Les index listent leurs fiches soit en puces, soit en tableau.
+      const nue = ligne.trim()
+      const enListe = /^-\s/.test(nue)
+      const enTableau = nue.startsWith('|')
+      if (!sectionCourante || (!enListe && !enTableau)) continue
+
+      const renvoi = nue.match(/\[\[([^\]|\\]+)/)
+      if (!renvoi) continue
+      const base = (renvoi[1] as string).trim()
+      if (!groupes.has(base)) {
+        groupes.set(base, sectionCourante)
+        ordre.push(base)
       }
     }
   }
 
   return { ordre, groupes }
+}
+
+/** Plus petit numéro `Qnn` cité par un index, `Infinity` s'il n'en cite aucun. */
+function premiereQuestionCitee(source: string): number {
+  let minimum = Number.POSITIVE_INFINITY
+  for (const m of source.matchAll(/\[\[Q(\d+)/gi)) {
+    minimum = Math.min(minimum, Number.parseInt(m[1] as string, 10))
+  }
+  return minimum
 }
 
 /** `A. Diagnostic externe` → `Diagnostic externe` ; `Bloc C — Modèle…` → `Modèle…`. */
@@ -165,11 +183,16 @@ function construire(): Question[] {
     const h1 = corps.match(/^#\s+(.*)$/m)?.[1]?.trim() ?? base.replace(/_/g, ' ')
     const mNumero = base.match(/^Q(\d+)/i)
     const numero = mNumero ? Number.parseInt(mNumero[1] as string, 10) : null
-    const ressource = /^00[_-]/.test(base)
+    // Tout fichier qui n'est pas numéroté `Qnn` est un document d'appui :
+    // index, mode d'emploi, synthèse.
+    const ressource = numero === null
 
-    // Le frontmatter porte la vraie question ; sinon on retombe sur le H1,
-    // débarrassé de son préfixe « Q6 — » qui est déjà affiché à part.
-    const titre = champs['question'] ?? h1.replace(/^Q\d+\s*[—–-]\s*/i, '').trim()
+    // Le frontmatter porte parfois la vraie question, parfois seulement la
+    // référence (`question: Q61`) : dans ce cas elle ne dit rien et on retombe
+    // sur le H1, débarrassé de son préfixe « Q61 — » déjà affiché à part.
+    const annonce = champs['question']?.trim()
+    const titre =
+      annonce && !/^Q\d+$/i.test(annonce) ? annonce : h1.replace(/^Q\d+\s*[—–-]\s*/i, '').trim()
 
     return {
       id: base,
