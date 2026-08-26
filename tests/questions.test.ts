@@ -29,6 +29,21 @@ function aplatir(blocs: Bloc[]): Bloc[] {
   )
 }
 
+/** Tout le texte qu'un bloc met sous les yeux du lecteur, listes comprises. */
+function texteRendu(bloc: Bloc): string {
+  switch (bloc.t) {
+    case 'paragraphe':
+    case 'titre':
+      return texteBrut(bloc.contenu)
+    case 'liste':
+      return bloc.items.map(texteBrut).join(' ')
+    case 'tableau':
+      return [bloc.entetes, ...bloc.lignes].flat().map(texteBrut).join(' ')
+    default:
+      return ''
+  }
+}
+
 describe('corpus des questions', () => {
   it('expose exactement autant de documents que de fichiers Markdown', () => {
     expect(questions).toHaveLength(FICHIERS.length)
@@ -99,9 +114,7 @@ describe('corpus des questions', () => {
         .replace(/[*`[\]]/g, '')
         .split(/\s+/)
         .filter((m) => m.length > 4)
-      const rendu = aplatir(blocs)
-        .map((b) => (b.t === 'paragraphe' || b.t === 'titre' ? texteBrut(b.contenu) : ''))
-        .join(' ')
+      const rendu = aplatir(blocs).map(texteRendu).join(' ')
       for (const mot of mots.slice(0, 3)) expect(rendu).toContain(mot)
     }
   })

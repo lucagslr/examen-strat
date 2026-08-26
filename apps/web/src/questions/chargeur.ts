@@ -106,6 +106,25 @@ function separerFrontmatter(brut: string): Frontmatter {
   return { champs, tags, corps: texte.slice(m[0].length) }
 }
 
+/* ------------------------------------------------------------- Numérotation */
+
+/**
+ * Le corpus compte deux séries de fiches numérotées : les questions `Qnn` et
+ * les mises en situation `CASnn`. Elles se reconnaissent au nom de fichier, à
+ * l'en-tête H1 et aux renvois, d'où ces trois expressions jumelles.
+ */
+const SERIES = 'Q|CAS'
+const FICHIER_NUMEROTE = new RegExp(`^(${SERIES})(\\d+)`, 'i')
+const TITRE_NUMEROTE = new RegExp(`^(?:${SERIES})\\s*\\d+\\s*[—–-]\\s*`, 'i')
+const RENVOI_NUMEROTE = new RegExp(`\\[\\[(${SERIES})(\\d+)`, 'gi')
+/** Le tag qui ne fait que répéter le numéro (`q60`, `cas-07`) n'apprend rien. */
+const TAG_NUMERO = new RegExp(`^(?:${SERIES})-?\\d+$`, 'i')
+
+/** `Q07` → `Q07` ; `CAS7` → `CAS 7`, comme l'écrivent le titre et l'index. */
+function referenceDe(serie: string, numero: number): string {
+  return serie.toUpperCase() === 'Q' ? `Q${String(numero).padStart(2, '0')}` : `CAS ${numero}`
+}
+
 /* --------------------------------------------------- Regroupement et ordre */
 
 /**
@@ -117,13 +136,13 @@ function lireIndex(): { ordre: string[]; groupes: Map<string, string> } {
   const ordre: string[] = []
   const groupes = new Map<string, string>()
 
-  // Les index sont classés par la première question qu'ils citent : une série
+  // Les index sont classés par la première fiche qu'ils citent : une série
   // qui commence à Q56 se lit après une série qui commence à Q01, quel que
   // soit le nom du fichier.
   const cheminsIndex = Object.keys(FICHIERS)
     .filter((c) => /\/00_/.test(c))
-    .map((chemin) => ({ chemin, depart: premiereQuestionCitee(FICHIERS[chemin] as string) }))
-    .sort((a, b) => a.depart - b.depart || a.chemin.localeCompare(b.chemin))
+    .map((chemin) => ({ chemin, depart: departIndex(FICHIERS[chemin] as string) }))
+    .sort((a, b) => (a.depart === b.depart ? a.chemin.localeCompare(b.chemin) : a.depart - b.depart))
 
   for (const { chemin } of cheminsIndex) {
     let sectionCourante: string | null = null
@@ -152,11 +171,16 @@ function lireIndex(): { ordre: string[]; groupes: Map<string, string> } {
   return { ordre, groupes }
 }
 
-/** Plus petit numéro `Qnn` cité par un index, `Infinity` s'il n'en cite aucun. */
-function premiereQuestionCitee(source: string): number {
+/**
+ * Plus petite fiche citée par un index, `Infinity` s'il n'en cite aucune.
+ * Les deux séries du corpus se suivent : les `Qnn` d'abord, les `CASnn`
+ * ensuite, d'où le décalage appliqué à la seconde.
+ */
+function departIndex(source: string): number {
   let minimum = Number.POSITIVE_INFINITY
-  for (const m of source.matchAll(/\[\[Q(\d+)/gi)) {
-    minimum = Math.min(minimum, Number.parseInt(m[1] as string, 10))
+  for (const m of source.matchAll(RENVOI_NUMEROTE)) {
+    const decalage = (m[1] as string).toUpperCase() === 'Q' ? 0 : 1000
+    minimum = Math.min(minimum, decalage + Number.parseInt(m[2] as string, 10))
   }
   return minimum
 }
@@ -181,24 +205,24 @@ function construire(): Question[] {
     const { champs, tags, corps } = separerFrontmatter(contenu)
 
     const h1 = corps.match(/^#\s+(.*)$/m)?.[1]?.trim() ?? base.replace(/_/g, ' ')
-    const mNumero = base.match(/^Q(\d+)/i)
-    const numero = mNumero ? Number.parseInt(mNumero[1] as string, 10) : null
-    // Tout fichier qui n'est pas numéroté `Qnn` est un document d'appui :
-    // index, mode d'emploi, synthèse.
-    const ressource = numero === null
+    const mNumero = base.match(FICHIER_NUMEROTE)
+    const numero = mNumero ? Number.parseInt(mNumero[2] as string, 10) : null
+    // Tout fichier qui n'appartient à aucune série numérotée est un document
+    // d'appui : index, mode d'emploi, synthèse.
+    const ressource = mNumero === null
 
     // Le frontmatter porte parfois la vraie question, parfois seulement la
     // référence (`question: Q61`) : dans ce cas elle ne dit rien et on retombe
     // sur le H1, débarrassé de son préfixe « Q61 — » déjà affiché à part.
     const annonce = champs['question']?.trim()
     const titre =
-      annonce && !/^Q\d+$/i.test(annonce) ? annonce : h1.replace(/^Q\d+\s*[—–-]\s*/i, '').trim()
+      annonce && !TAG_NUMERO.test(annonce) ? annonce : h1.replace(TITRE_NUMEROTE, '').trim()
 
     return {
       id: base,
       slug: slugifier(base),
       numero,
-      reference: numero !== null ? `Q${String(numero).padStart(2, '0')}` : null,
+      reference: mNumero ? referenceDe(mNumero[1] as string, numero as number) : null,
       titre,
       h1,
       tags,
@@ -219,7 +243,7 @@ function construire(): Question[] {
 
   for (const q of brutes) {
     q.groupeId = slugifier(q.groupe)
-    q.motsCles = q.tags.filter((t) => !/^Q\d+$/i.test(t) && (frequence.get(t) ?? 0) < seuil).slice(0, 4)
+    q.motsCles = q.tags.filter((t) => !TAG_NUMERO.test(t) && (frequence.get(t) ?? 0) < seuil).slice(0, 4)
   }
 
   return brutes.sort((a, b) => {
@@ -278,7 +302,9 @@ export function renvoisNonResolus(): { source: string; cible: string }[] {
   const manquants: { source: string; cible: string }[] = []
   for (const q of questions) {
     for (const m of q.source.matchAll(/\[\[([^\]\n]+)\]\]/g)) {
-      const cible = (m[1] as string).trim()
+      // `[[cible|libellé]]`, et sa variante échappée `[[cible\|libellé]]` que
+      // le corpus emploie à l'intérieur des tableaux : seule la cible compte.
+      const cible = (m[1] as string).split('|')[0]!.replace(/\\$/, '').trim()
       if (!parCleRenvoi.has(cleRenvoi(cible))) manquants.push({ source: q.id, cible })
     }
   }
