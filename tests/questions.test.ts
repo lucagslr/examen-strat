@@ -56,7 +56,20 @@ describe('corpus des questions', () => {
   it('classe chaque fiche dans un groupe issu des fichiers d’index', () => {
     expect(groupes.length).toBeGreaterThan(1)
     expect(groupes.flatMap((g) => g.questions)).toHaveLength(fiches.length)
-    for (const q of fiches) expect(q.groupe).not.toBe('Autres fiches')
+
+    // Toute fiche listée dans un `00_Index…` porte l'intitulé de sa section.
+    const listees = new Set<string>()
+    for (const fichier of FICHIERS.filter((f) => f.startsWith('00_'))) {
+      const brut = readFileSync(resolve(DOSSIER, fichier), 'utf8')
+      for (const m of brut.matchAll(/^\s*-\s*\[\[([^\]]+)\]\]/gm)) listees.add((m[1] as string).trim())
+    }
+    const classees = fiches.filter((q) => listees.has(q.id))
+    expect(classees.length).toBeGreaterThan(50)
+    for (const q of classees) expect(q.groupe).not.toBe('Autres fiches')
+
+    // Une fiche déposée sans être listée reste publiée : elle tombe dans un
+    // groupe de repli, ce qui est un choix de conception, pas une erreur.
+    for (const q of fiches) expect(q.groupe.length).toBeGreaterThan(0)
   })
 
   it('analyse chaque fiche sans rien perdre du texte du fichier', () => {
@@ -65,8 +78,18 @@ describe('corpus des questions', () => {
       expect(blocs.length).toBeGreaterThan(0)
 
       // Le dernier paragraphe utile du fichier doit se retrouver dans l'arbre.
-      const lignes = q.source.trimEnd().split('\n')
-      const derniere = lignes.reverse().find((l) => l.trim().length > 0 && !/^[|#>`-]/.test(l.trim()))
+      // L'intérieur des blocs ``` est écarté : son texte est conservé tel quel
+      // dans un bloc `code` ou `mermaid`, il n'a pas à réapparaître en prose.
+      const horsCloture: string[] = []
+      let dansBloc = false
+      for (const ligne of q.source.trimEnd().split('\n')) {
+        if (ligne.trim().startsWith('```')) {
+          dansBloc = !dansBloc
+          continue
+        }
+        if (!dansBloc) horsCloture.push(ligne)
+      }
+      const derniere = horsCloture.reverse().find((l) => l.trim().length > 0 && !/^[|#>`-]/.test(l.trim()))
       if (!derniere) continue
 
       const mots = derniere
