@@ -14,6 +14,7 @@ export default defineConfig(({ mode }) => ({
   plugins: [react()],
   resolve: {
     alias: {
+      '@strat/content/modeles': r('../../packages/content/src/modeles/index.ts'),
       '@strat/content': r('../../packages/content/src/index.ts'),
       '@strat/domain': r('../../packages/domain/src/index.ts'),
       '@strat/ui': r('../../packages/ui/src/index.tsx'),
@@ -29,6 +30,10 @@ export default defineConfig(({ mode }) => ({
     rollupOptions: {
       output: {
         manualChunks(id) {
+          // Les 25 fiches « modèle » et l'analyse guidée pèsent autant que le
+          // reste du corpus : elles forment leur propre fragment, chargé avec
+          // les routes qui les affichent et pas à l'ouverture de l'accueil.
+          if (/packages[\\/]content[\\/]src[\\/]modeles[\\/]/.test(id)) return 'modeles'
           if (id.includes('packages/content/src')) return 'corpus'
           // Les fiches Markdown forment un fragment à part : elles changent
           // indépendamment du code, et ne sont chargées qu'avec leur route.

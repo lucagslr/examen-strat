@@ -39,6 +39,39 @@ export { cas } from './cas'
 export { parcours, combinaisons } from './parcours'
 export { jeux } from './jeux'
 export { methode } from './methode'
+
+/**
+ * Modèles et analyse guidée.
+ *
+ * Seuls les **types** et les deux compteurs traversent ce point d'entrée. Les
+ * données, elles, s'importent depuis `@strat/content/modeles` : un ré-export
+ * de valeurs ferait entrer les 25 fiches — près d'un mégaoctet — dans le
+ * fragment commun, que l'accueil télécharge au premier écran.
+ */
+export { NB_MODELES, NB_ETAPES_ANALYSE } from './modeles/sommaire'
+export type {
+  Analyse,
+  AxeSchema,
+  BlocAnalyse,
+  CasAnalyse,
+  EtapeAnalyse,
+  FamilleModele,
+  FormeSchema,
+  GesteMethode,
+  LienModele,
+  LienSchema,
+  Modele,
+  ModeleId,
+  NoeudSchema,
+  ParcoursModeles,
+  PiegeModele,
+  PointId,
+  PointModele,
+  SchemaModele,
+  SeanceParcours,
+  TonSchema,
+  VarianteModele,
+} from './modeles/types'
 export { questionsOfficielles } from './questions-officielles'
 export { questionsProbables } from './questions-probables'
 export { guidages } from './guidages'

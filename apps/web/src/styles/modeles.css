@@ -1,0 +1,696 @@
+/* =========================================================================
+   STRAT — modules « Les modèles » et « L'analyse guidée »
+   ---------------------------------------------------------------------------
+   Aucune couleur ni aucun espacement n'est inventé ici : tout vient des jetons
+   existants, thème clair et thème sombre compris. Ce fichier n'est chargé que
+   par ces deux routes.
+   ========================================================================= */
+
+/* ========================================================== LE SCHÉMA SVG */
+
+.sch {
+  margin: var(--e-4) 0;
+}
+
+/* Sous une certaine largeur le dessin défile plutôt que de devenir illisible. */
+.sch__cadre-defilant {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  padding-bottom: var(--e-2);
+  border-radius: var(--r-2);
+}
+
+.sch__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* --- Formes -------------------------------------------------------------- */
+
+.sch__forme {
+  stroke-width: 1.6;
+  fill: var(--c-fond-2);
+  stroke: var(--c-bordure-forte);
+}
+
+.sch__forme--accent { fill: var(--c-accent-doux); stroke: var(--c-accent); stroke-width: 2.2; }
+.sch__forme--positif { fill: var(--c-succes-doux); stroke: var(--c-succes); }
+.sch__forme--alerte { fill: var(--c-alerte-doux); stroke: var(--c-alerte); }
+.sch__forme--danger { fill: var(--c-erreur-doux); stroke: var(--c-erreur); }
+.sch__forme--sourd { fill: var(--c-fond-3); stroke: var(--c-bordure); }
+
+.sch__cadre {
+  fill: none;
+  stroke: var(--c-bordure);
+  stroke-width: 1.4;
+  stroke-dasharray: 7 6;
+}
+
+.sch__cadre-titre {
+  fill: var(--c-texte-3);
+  font-family: var(--f-corps);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* --- Texte --------------------------------------------------------------- */
+
+.sch__titre,
+.sch__ligne {
+  font-family: var(--f-corps);
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+.sch__titre { fill: var(--c-texte); font-weight: 620; }
+.sch__ligne { fill: var(--c-texte-2); }
+
+/* --- Liens --------------------------------------------------------------- */
+
+.sch__lien {
+  stroke: var(--c-texte-3);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.sch__lien--accent { stroke: var(--c-accent); }
+.sch__lien--positif { stroke: var(--c-succes); }
+.sch__lien--alerte { stroke: var(--c-alerte); }
+.sch__lien--danger { stroke: var(--c-erreur); }
+.sch__lien--sourd { stroke: var(--c-bordure-forte); }
+
+.sch__lien--pointille { stroke-dasharray: 6 5; }
+
+/* La pointe reprend la couleur du trait, en aplat. */
+.sch__pointe { fill: var(--c-texte-3); stroke: none; }
+.sch__pointe.sch__lien--accent { fill: var(--c-accent); }
+.sch__pointe.sch__lien--positif { fill: var(--c-succes); }
+.sch__pointe.sch__lien--alerte { fill: var(--c-alerte); }
+.sch__pointe.sch__lien--danger { fill: var(--c-erreur); }
+.sch__pointe.sch__lien--sourd { fill: var(--c-bordure-forte); }
+
+.sch__lien-libelle {
+  fill: var(--c-texte-2);
+  font-family: var(--f-corps);
+  text-anchor: middle;
+  paint-order: stroke;
+  stroke: var(--c-fond);
+  stroke-width: 5;
+  stroke-linejoin: round;
+}
+
+/* --- Axes d'une matrice --------------------------------------------------- */
+
+.sch__axes line { stroke: var(--c-accent); stroke-width: 1.6; opacity: 0.7; }
+
+.sch__axe-libelle {
+  fill: var(--c-texte-2);
+  font-family: var(--f-corps);
+  font-weight: 620;
+  letter-spacing: 0.03em;
+}
+
+/* --- Cases cliquables ----------------------------------------------------- */
+
+.sch__noeud--lien { cursor: pointer; }
+
+.sch__noeud--lien .sch__forme {
+  transition: fill var(--duree-rapide) var(--courbe), stroke-width var(--duree-rapide) var(--courbe);
+}
+
+.sch__noeud--lien:hover .sch__forme,
+.sch__noeud--lien:focus-visible .sch__forme {
+  fill: var(--c-accent-doux);
+  stroke: var(--c-accent);
+  stroke-width: 2.6;
+}
+
+.sch__noeud--lien:focus-visible {
+  outline: none;
+}
+
+.sch__noeud--lien:focus-visible .sch__forme {
+  /* Le contour SVG ne suit pas le rayon : on épaissit le trait à la place. */
+  stroke-width: 3.4;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sch__noeud--lien .sch__forme { transition: none; }
+}
+
+.sch__note {
+  margin-top: var(--e-2);
+  color: var(--c-texte-2);
+  font-size: var(--t-petit);
+  line-height: var(--lh-corps);
+}
+
+/* ===================================================== INDEX DES MODÈLES */
+
+.md-familles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e-2);
+  margin-bottom: var(--e-4);
+}
+
+.md-grille {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--e-3);
+}
+
+@media (min-width: 640px) {
+  .md-grille { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1040px) {
+  .md-grille { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+.md-carte { margin: 0; display: flex; }
+
+.md-carte__lien {
+  display: flex;
+  flex-direction: column;
+  gap: var(--e-2);
+  width: 100%;
+  padding: var(--e-4);
+  border: 1px solid var(--c-bordure);
+  border-radius: var(--r-3);
+  background: var(--c-fond-2);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color var(--duree-rapide) var(--courbe), box-shadow var(--duree-rapide) var(--courbe);
+}
+
+.md-carte__lien:hover,
+.md-carte__lien:focus-visible {
+  border-color: var(--c-accent);
+  box-shadow: var(--ombre-2);
+}
+
+.md-carte__numero {
+  font-variant-numeric: tabular-nums;
+  font-size: var(--t-legende);
+  font-weight: 660;
+  color: var(--c-accent);
+  letter-spacing: 0.06em;
+}
+
+.md-carte__nom {
+  font-size: var(--t-h3);
+  font-weight: 640;
+  line-height: var(--lh-titre);
+}
+
+.md-carte__question {
+  font-size: var(--t-petit);
+  color: var(--c-texte-2);
+  line-height: var(--lh-corps);
+}
+
+.md-carte__vignette {
+  border-top: 1px solid var(--c-bordure);
+  padding-top: var(--e-2);
+  margin-top: auto;
+}
+
+.md-carte__vignette .sch { margin: 0; pointer-events: none; }
+.md-carte__vignette .sch__cadre-defilant { overflow: hidden; }
+.md-carte__vignette .sch__svg { min-width: 0 !important; }
+
+/* ====================================================== FICHE D'UN MODÈLE */
+
+.md-fiche {
+  display: grid;
+  gap: var(--e-5);
+  /* Sans `minmax(0, …)`, la colonne s'élargit jusqu'à la largeur minimale du
+     schéma : c'est la page entière qui défile au lieu du seul dessin. */
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.md-fiche__corps { min-width: 0; }
+
+@media (min-width: 1040px) {
+  .md-fiche {
+    grid-template-columns: minmax(0, 1fr) 240px;
+    align-items: start;
+  }
+  .md-fiche__cote {
+    position: sticky;
+    top: var(--e-4);
+    display: grid;
+    gap: var(--e-3);
+  }
+}
+
+.md-fiche__cote { display: none; }
+@media (min-width: 1040px) { .md-fiche__cote { display: grid; } }
+
+.md-sommaire {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--e-1);
+  font-size: var(--t-petit);
+}
+
+.md-sommaire__lien {
+  display: block;
+  padding: var(--e-2);
+  border-radius: var(--r-2);
+  color: var(--c-texte-2);
+  text-decoration: none;
+  border-left: 2px solid transparent;
+}
+
+.md-sommaire__lien:hover,
+.md-sommaire__lien:focus-visible {
+  background: var(--c-fond-3);
+  color: var(--c-texte);
+  border-left-color: var(--c-accent);
+}
+
+/* --- Le point expliqué ---------------------------------------------------- */
+
+.md-point {
+  border: 1px solid var(--c-bordure);
+  border-radius: var(--r-3);
+  background: var(--c-fond-2);
+  padding: var(--e-4);
+  margin-bottom: var(--e-3);
+  /* Le lien depuis le schéma amène ici : on laisse de l'air sous la barre. */
+  scroll-margin-top: var(--e-5);
+}
+
+/* La case ouverte depuis le schéma. Le routage se fait par `?point=…` et non
+   par une ancre `#…`, qui serait interceptée par le routeur : c'est donc une
+   classe, pas `:target`. */
+.md-point--vise {
+  border-color: var(--c-accent);
+  box-shadow: 0 0 0 3px var(--c-accent-doux);
+}
+
+.md-point__entete {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--e-2);
+  margin-bottom: var(--e-2);
+}
+
+.md-point__libelle {
+  font-size: var(--t-h3);
+  font-weight: 640;
+  margin: 0;
+}
+
+.md-point__question {
+  margin: var(--e-2) 0;
+  padding-left: var(--e-3);
+  border-left: 3px solid var(--c-accent);
+  color: var(--c-texte);
+  font-weight: 560;
+}
+
+.md-point__intitule {
+  display: block;
+  font-size: var(--t-legende);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--c-texte-3);
+  margin: var(--e-3) 0 var(--e-1);
+}
+
+.md-point ul { margin: 0; padding-left: var(--e-5); }
+.md-point li { margin-bottom: var(--e-1); }
+
+.md-piege {
+  margin-top: var(--e-3);
+  padding: var(--e-3);
+  border-radius: var(--r-2);
+  background: var(--c-alerte-doux);
+  font-size: var(--t-petit);
+  line-height: var(--lh-corps);
+}
+
+.md-piege__reflexe { display: block; margin-top: var(--e-1); }
+
+/* --- Méthode numérotée ---------------------------------------------------- */
+
+.md-methode {
+  list-style: none;
+  counter-reset: etape;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--e-3);
+}
+
+.md-methode__item {
+  counter-increment: etape;
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  gap: var(--e-3);
+  align-items: start;
+}
+
+.md-methode__item::before {
+  content: counter(etape);
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--r-pilule);
+  background: var(--c-accent);
+  color: var(--c-accent-texte);
+  font-size: var(--t-petit);
+  font-weight: 660;
+  font-variant-numeric: tabular-nums;
+}
+
+.md-methode__titre { font-weight: 620; display: block; }
+.md-methode__eviter {
+  display: block;
+  margin-top: var(--e-1);
+  font-size: var(--t-petit);
+  color: var(--c-alerte);
+}
+
+/* --- Liens entre modèles -------------------------------------------------- */
+
+.md-liens { display: grid; gap: var(--e-2); }
+
+.md-lien {
+  display: grid;
+  gap: var(--e-1);
+  padding: var(--e-3);
+  border: 1px solid var(--c-bordure);
+  border-left: 3px solid var(--c-accent);
+  border-radius: var(--r-2);
+  background: var(--c-fond-2);
+  text-decoration: none;
+  color: inherit;
+}
+
+.md-lien:hover, .md-lien:focus-visible { background: var(--c-fond-3); }
+.md-lien__nature {
+  font-size: var(--t-legende);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--c-texte-3);
+}
+.md-lien__nom { font-weight: 620; }
+.md-lien__explication { font-size: var(--t-petit); color: var(--c-texte-2); line-height: var(--lh-corps); }
+
+/* --- Déroulé de l'exemple ------------------------------------------------- */
+
+.md-deroule {
+  display: grid;
+  gap: 0;
+  border: 1px solid var(--c-bordure);
+  border-radius: var(--r-2);
+  overflow: hidden;
+}
+
+.md-deroule__ligne {
+  display: grid;
+  gap: var(--e-1);
+  padding: var(--e-3);
+  border-bottom: 1px solid var(--c-bordure);
+  background: var(--c-fond-2);
+}
+
+@media (min-width: 640px) {
+  .md-deroule__ligne { grid-template-columns: 190px minmax(0, 1fr); gap: var(--e-4); }
+}
+
+.md-deroule__ligne:last-child { border-bottom: none; }
+.md-deroule__etiquette { font-weight: 620; font-size: var(--t-petit); }
+.md-deroule__contenu { color: var(--c-texte-2); font-size: var(--t-petit); line-height: var(--lh-corps); }
+
+/* --- Phrase d'oral -------------------------------------------------------- */
+
+.md-oral {
+  margin: var(--e-4) 0;
+  padding: var(--e-4);
+  border-radius: var(--r-3);
+  background: var(--c-succes-doux);
+  border-left: 3px solid var(--c-succes);
+}
+
+.md-oral__intitule {
+  display: block;
+  font-size: var(--t-legende);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--c-succes);
+  margin-bottom: var(--e-2);
+  font-weight: 660;
+}
+
+.md-oral__phrase { margin: 0; font-size: var(--t-corps); line-height: var(--lh-corps); }
+
+/* --- Variante du cours ---------------------------------------------------- */
+
+.md-variante {
+  border: 1px solid var(--c-alerte);
+  border-radius: var(--r-3);
+  background: var(--c-alerte-doux);
+  padding: var(--e-4);
+}
+
+.md-variante__formulations { margin: var(--e-2) 0; padding-left: var(--e-5); }
+.md-variante__source { color: var(--c-texte-2); font-size: var(--t-petit); }
+
+/* --- Table « à retenir » -------------------------------------------------- */
+
+.md-retenir { display: grid; gap: 0; border-top: 1px solid var(--c-bordure); }
+
+.md-retenir__ligne {
+  display: grid;
+  gap: var(--e-1);
+  padding: var(--e-3) 0;
+  border-bottom: 1px solid var(--c-bordure);
+}
+
+@media (min-width: 640px) {
+  .md-retenir__ligne { grid-template-columns: 230px minmax(0, 1fr); gap: var(--e-4); }
+}
+
+.md-retenir__cle { font-weight: 620; font-size: var(--t-petit); }
+.md-retenir__valeur { color: var(--c-texte-2); font-size: var(--t-petit); line-height: var(--lh-corps); }
+
+/* ======================================================= L'ANALYSE GUIDÉE */
+
+.an-fil {
+  display: flex;
+  gap: var(--e-1);
+  overflow-x: auto;
+  padding-bottom: var(--e-2);
+  margin-bottom: var(--e-4);
+  scrollbar-width: thin;
+}
+
+.an-fil__etape {
+  flex: 0 0 auto;
+  display: grid;
+  gap: 2px;
+  padding: var(--e-2) var(--e-3);
+  border: 1px solid var(--c-bordure);
+  border-radius: var(--r-2);
+  background: var(--c-fond-2);
+  text-decoration: none;
+  color: var(--c-texte-2);
+  min-width: 116px;
+}
+
+.an-fil__etape[aria-current='step'] {
+  border-color: var(--c-accent);
+  background: var(--c-accent-doux);
+  color: var(--c-texte);
+}
+
+.an-fil__numero { font-size: var(--t-legende); font-weight: 660; color: var(--c-accent); font-variant-numeric: tabular-nums; }
+.an-fil__titre { font-size: var(--t-petit); font-weight: 560; line-height: 1.3; }
+
+/* `minmax(0, …)` est indispensable : un schéma ou un tableau large forcerait
+   sinon la colonne — donc la page entière — à s'élargir, au lieu de défiler
+   dans son propre conteneur. */
+.an-flux {
+  display: grid;
+  gap: var(--e-4);
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.an-observation {
+  display: grid;
+  gap: var(--e-2);
+  padding: var(--e-4);
+  border-radius: var(--r-3);
+  background: var(--c-fond-2);
+  border: 1px solid var(--c-bordure);
+}
+
+@media (min-width: 720px) {
+  .an-observation { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: var(--e-4); }
+}
+
+.an-observation__source {
+  font-style: italic;
+  color: var(--c-texte-2);
+  line-height: var(--lh-corps);
+}
+
+.an-observation__fleche { color: var(--c-accent); font-size: 1.3rem; text-align: center; }
+.an-observation__conclusion { font-weight: 560; line-height: var(--lh-corps); }
+
+.an-question {
+  margin: 0;
+  padding: var(--e-3) var(--e-4);
+  border-left: 3px solid var(--c-accent);
+  background: var(--c-fond-3);
+  border-radius: 0 var(--r-2) var(--r-2) 0;
+  font-weight: 560;
+}
+
+.an-renvoi {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e-2);
+  padding: var(--e-2) var(--e-3);
+  border: 1px solid var(--c-accent);
+  border-radius: var(--r-pilule);
+  background: var(--c-accent-doux);
+  color: var(--c-texte);
+  text-decoration: none;
+  font-size: var(--t-petit);
+  font-weight: 560;
+}
+
+.an-renvoi:hover, .an-renvoi:focus-visible { background: var(--c-accent); color: var(--c-accent-texte); }
+.an-renvoi__signe { opacity: 0.75; }
+
+/* Le modèle et la case visés, en second plan : on lit d'abord ce qu'on va y
+   trouver, ensuite où cela se trouve. */
+.an-renvoi__cible {
+  font-size: var(--t-legende);
+  font-weight: 400;
+  opacity: 0.85;
+  border-left: 1px solid currentColor;
+  padding-left: var(--e-2);
+}
+
+.an-livrable {
+  border: 1px solid var(--c-bordure-forte);
+  border-radius: var(--r-3);
+  background: var(--c-fond-3);
+  padding: var(--e-4);
+}
+
+.an-livrable__lignes {
+  margin: var(--e-2) 0 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--f-mono);
+  font-size: var(--t-petit);
+  line-height: 1.85;
+  white-space: pre-wrap;
+}
+
+.an-etape__meta {
+  display: grid;
+  gap: var(--e-2);
+  margin-bottom: var(--e-4);
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 720px) {
+  .an-etape__meta { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--e-3); }
+}
+
+.an-etape__flux {
+  display: grid;
+  gap: var(--e-1);
+  padding: var(--e-3);
+  border-radius: var(--r-2);
+  background: var(--c-fond-3);
+  font-size: var(--t-petit);
+}
+
+.an-etape__flux dt { font-size: var(--t-legende); text-transform: uppercase; letter-spacing: 0.05em; color: var(--c-texte-3); }
+.an-etape__flux dd { margin: 0; color: var(--c-texte-2); line-height: var(--lh-corps); }
+
+/* --------------------------------------------------------- Tableau commun */
+
+.md-tableau { overflow-x: auto; margin: var(--e-3) 0; }
+
+.md-tableau table {
+  width: 100%;
+  min-width: 460px;
+  border-collapse: collapse;
+  font-size: var(--t-petit);
+}
+
+.md-tableau th,
+.md-tableau td {
+  padding: var(--e-2) var(--e-3);
+  text-align: left;
+  border-bottom: 1px solid var(--c-bordure);
+  vertical-align: top;
+  line-height: var(--lh-corps);
+}
+
+.md-tableau th { font-weight: 660; background: var(--c-fond-3); }
+.md-tableau caption { caption-side: bottom; padding-top: var(--e-2); font-size: var(--t-legende); color: var(--c-texte-3); text-align: left; }
+
+/* ------------------------------------------------------------- Parcours 12 h */
+
+.md-seances { display: grid; gap: var(--e-3); counter-reset: seance; }
+
+.md-seance {
+  display: grid;
+  gap: var(--e-2);
+  padding: var(--e-4);
+  border: 1px solid var(--c-bordure);
+  border-left: 3px solid var(--c-accent);
+  border-radius: var(--r-3);
+  background: var(--c-fond-2);
+}
+
+.md-seance__entete { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--e-2); }
+.md-seance__titre { margin: 0; font-size: var(--t-h3); font-weight: 640; }
+.md-seance__duree {
+  font-size: var(--t-legende);
+  font-variant-numeric: tabular-nums;
+  color: var(--c-texte-2);
+  border: 1px solid var(--c-bordure);
+  border-radius: var(--r-pilule);
+  padding: 2px var(--e-2);
+}
+.md-seance__controle {
+  font-size: var(--t-petit);
+  padding: var(--e-2) var(--e-3);
+  background: var(--c-succes-doux);
+  border-radius: var(--r-2);
+  line-height: var(--lh-corps);
+}
+
+.md-jetons { display: flex; flex-wrap: wrap; gap: var(--e-2); }
+
+.md-jeton {
+  font-size: var(--t-legende);
+  padding: 3px var(--e-2);
+  border: 1px solid var(--c-bordure);
+  border-radius: var(--r-pilule);
+  color: var(--c-texte-2);
+  text-decoration: none;
+}
+
+.md-jeton:hover, .md-jeton:focus-visible { border-color: var(--c-accent); color: var(--c-texte); }

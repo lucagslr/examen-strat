@@ -8,6 +8,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
+      '@strat/content/modeles': r('./packages/content/src/modeles/index.ts'),
       '@strat/content': r('./packages/content/src/index.ts'),
       '@strat/domain': r('./packages/domain/src/index.ts'),
       '@strat/ui': r('./packages/ui/src/index.tsx'),

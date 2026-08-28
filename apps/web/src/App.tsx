@@ -17,6 +17,10 @@ const Entrainer = lazy(() => import('@app/routes/Entrainer').then((m) => ({ defa
 const Quiz = lazy(() => import('@app/routes/Entrainer').then((m) => ({ default: m.Quiz })))
 const ListeQuestions = lazy(() => import('@app/routes/QuestionOuverte').then((m) => ({ default: m.ListeQuestions })))
 const QuestionOuverte = lazy(() => import('@app/routes/QuestionOuverte').then((m) => ({ default: m.QuestionOuverte })))
+const Modeles = lazy(() => import('@app/routes/Modeles').then((m) => ({ default: m.Modeles })))
+const FicheModele = lazy(() => import('@app/routes/Modeles').then((m) => ({ default: m.FicheModele })))
+const Analyse = lazy(() => import('@app/routes/Analyse').then((m) => ({ default: m.Analyse })))
+const EtapeAnalyseVue = lazy(() => import('@app/routes/Analyse').then((m) => ({ default: m.EtapeAnalyseVue })))
 const Jeux = lazy(() => import('@app/routes/Jeux').then((m) => ({ default: m.Jeux })))
 const Jeu = lazy(() => import('@app/routes/Jeux').then((m) => ({ default: m.Jeu })))
 const ListeCas = lazy(() => import('@app/routes/Cas').then((m) => ({ default: m.ListeCas })))
@@ -47,6 +51,10 @@ const ROUTES: { motif: string; rendre: (params: Record<string, string>) => React
   { motif: '/review/session', rendre: () => <SessionRapide /> },
 
   { motif: '/training', rendre: () => <Entrainer /> },
+  { motif: '/training/models', rendre: () => <Modeles /> },
+  { motif: '/training/models/:slug', rendre: (p) => <FicheModele slug={p.slug ?? ''} /> },
+  { motif: '/training/analysis', rendre: () => <Analyse /> },
+  { motif: '/training/analysis/:slug', rendre: (p) => <EtapeAnalyseVue slug={p.slug ?? ''} /> },
   { motif: '/training/quiz', rendre: () => <Quiz /> },
   { motif: '/training/open', rendre: () => <ListeQuestions /> },
   { motif: '/training/open/:id', rendre: (p) => <QuestionOuverte id={p.id ?? ''} /> },

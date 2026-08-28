@@ -1,4 +1,12 @@
-import { cas, jeux, questions, quiz, type Quiz as TypeQuiz } from '@strat/content'
+import {
+  cas,
+  jeux,
+  questions,
+  quiz,
+  NB_ETAPES_ANALYSE,
+  NB_MODELES,
+  type Quiz as TypeQuiz,
+} from '@strat/content'
 import {
   ajouterHistorique,
   enregistrerQuiz,
@@ -27,6 +35,38 @@ export function Entrainer() {
         intro="Reconnaître, distinguer, appliquer, argumenter. Tout part des mêmes notions : ce sont les modes d'interaction qui changent."
       />
 
+      {/* Avant de s'exercer : comprendre le raisonnement. Ces deux sections
+          sont l'entrée pour qui part de zéro — les autres supposent acquis ce
+          qu'elles enseignent. */}
+      <Section titre="Apprendre le raisonnement">
+        <div className="grille grille--2">
+          <Carte variante="accent">
+            <h2 className="carte__titre">Les modèles</h2>
+            <p className="petit secondaire">
+              Les {NB_MODELES} schémas du cours, expliqués case par case : à quoi sert chaque case, ce qu’on y met,
+              quand sortir l’outil et ce qui le relie aux autres. Chaque case du dessin mène à son explication. Un
+              découpage en huit séances permet de tout apprendre en moins de douze heures.
+            </p>
+            <Bouton variante="principal" pleineLargeur onClick={() => naviguer('/training/models')}>
+              Ouvrir
+            </Bouton>
+          </Carte>
+
+          <Carte variante="accent">
+            <h2 className="carte__titre">L’analyse guidée</h2>
+            <p className="petit secondaire">
+              Un cas déroulé de bout en bout en {NB_ETAPES_ANALYSE} étapes : la question qu’on se pose, la méthode,
+              le raisonnement à voix haute et le brouillon qu’on écrit. Chaque geste renvoie vers la case du modèle qui
+              le fonde.
+            </p>
+            <Bouton variante="principal" pleineLargeur onClick={() => naviguer('/training/analysis')}>
+              Ouvrir
+            </Bouton>
+          </Carte>
+        </div>
+      </Section>
+
+      <Section titre="S’exercer">
       <div className="grille grille--2">
         <Carte variante="accent">
           <h2 className="carte__titre">Quiz</h2>
@@ -72,7 +112,8 @@ export function Entrainer() {
             Ouvrir
           </Bouton>
         </Carte>
-      </div>
+        </div>
+      </Section>
 
       <Section titre="Duels « ne pas confondre »">
         <p className="petit secondaire">
